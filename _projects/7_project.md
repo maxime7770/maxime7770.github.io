@@ -7,4 +7,4 @@ importance: 4
 category: fun
 ---
 
-[Test link](test.html)
+[Test link](./test.html)
