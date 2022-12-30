@@ -15,6 +15,8 @@ group :jekyll_plugins do
     gem 'jemoji'
     gem 'unicode_utils'
     gem 'webrick'
+    gem 'jekyll-theme-cayman'
+
 end
 group :other_plugins do
     gem 'httparty'
