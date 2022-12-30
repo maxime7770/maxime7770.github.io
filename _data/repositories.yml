@@ -1,11 +1,6 @@
 github_users:
   - maxime7770
 
-# github_repos:
-#   - alshedivat/al-folio
-#   - twbs/bootstrap
-#   - jekyll/jekyll
-#   - jquery/jquery
-#   - FortAwesome/Font-Awesome
-#   - jpswalsh/academicons
-#   - mathjax/MathJax
+github_repos:
+  - maxime7770/NER-Medical-Document
+  - maxime7770/Chess
