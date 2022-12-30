@@ -2,11 +2,11 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
+subtitle: MEng student at CentraleSupélec | ML Engineer at <a href='https://aaico.com/'>AAICO</a> | maxwolf34@gmail.com
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: 
   image_circular: false # crops the image to make it circular
   address: >
     <p>555 your office number</p>
