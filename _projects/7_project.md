@@ -7,7 +7,7 @@ importance: 4
 category: fun
 ---
 
-[Test link](./test.html)
+[Test link](./tfjs.html)
 
 
 <html>
