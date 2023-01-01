@@ -9,12 +9,3 @@ category: fun
 
 [Test link](https://maxime7770.github.io/projects/tfjs.html)
 
-
-<html>
-  <head>
-    <title>Hello</title>
-  </head>
-  <body>
-    Hello
-  </body>
-</html>
