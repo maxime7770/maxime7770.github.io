@@ -7,7 +7,7 @@ importance: 4
 category: fun
 ---
 
-[Test link](./test.html)
+[Test link](maxime7770.github.io/projects/test.html)
 
 
 <html>
