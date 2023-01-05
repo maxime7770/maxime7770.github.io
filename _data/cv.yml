@@ -15,7 +15,7 @@
       institution: CentraleSupélec, Paris-Saclay University
       year: 2020-Present
       description:
-        - CentraleSupélec is a top-2 French Engineering School, member of France's Grandes Écoles, based on a highly selective admission process. <b>GPA:<\b> <b>4.19/4.33<\b> (top-5% of the class)
+        - CentraleSupélec is a top-2 French Engineering School, member of France's Grandes Écoles, based on a highly selective admission process. <b>GPA:<\b> <b>4.19/4.33 (top-5% of the class)
         - title: Relevant courses
           contents:
             - Statistics and Learning, Advanced Probability, Machine Learning, Algorithmics and Complexity, Statistics and Data in Finance, Partial Differential Equations, Linear Algebra, Signal Processing, Optimization
@@ -46,10 +46,9 @@
         - Built a platform to monitor lawn growth for the firm idverde, Europe’s leading provider of grounds maintenance and landscape creation services; applied XGBoost based on weather API and data collected by IoT objects; cut workers’ interventions by approximately 30%
 
     - title: Student
-      institution: CentraleSupélec
+      institution: Academic and research projects at CentraleSupélec
       year: 2020-2022
-      description: Academic and research projects
-      contents:
+      description:
         - title: Kaggle competition as part of a Machine Learning elecitve course
           description: Classified geographical areas of interest represented as 300k+ rows of tabular data; designed 100+ new features with feature engineering methods; reached 72% F1-score with an XGBoost model; ranked 1st among more than 250 students of CentraleSupélec
         - title: Research project on quantum computing
@@ -65,28 +64,6 @@
   contents:
     - title: Python (pandas, scikit-learn, spaCy, Tensorflow, Keras, PyTorch, Transformers), SQL (MySQL), Matlab, R
 
-- title: Honors and Awards
-  type: time_table
-  contents:
-    - year: 1921
-      items: 
-        - Nobel Prize in Physics 
-        - Matteucci Medal
-    - year: 2029
-      items: 
-        - Max Planck Medal
-
-- title: Addition Information
-  type: nested_list
-  contents:
-    - title: Certifications
-      items: 
-        - Description 1.
-        - Description 2.
-    - title: Language
-      items:
-        - Description 1.
-        - Description 2.
 
 - title: Additional Information
   type: list
