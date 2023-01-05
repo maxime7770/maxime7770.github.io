@@ -46,7 +46,7 @@
         - Built a platform to monitor lawn growth for the firm idverde, Europe’s leading provider of grounds maintenance and landscape creation services; applied XGBoost based on weather API and data collected by IoT objects; cut workers’ interventions by approximately 30%
 
     - title: Student
-      institution: CentraleSupélec
+      institution: Academic projects at CentraleSupélec
       year: 2020-2022
       description:
         - title: Kaggle competition as part of a Machine Learning elecitve course
