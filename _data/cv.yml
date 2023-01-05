@@ -5,8 +5,8 @@
       value: Maxime Wolf
     - name: Date of Birth
       value: 29th October 2000
-    - name: Languages
-      value: English, French
+    - name: Email
+      value: maxime.wolf@student-cs.fr | maxwolf34@gmail.com
 
 - title: Education
   type: time_table
