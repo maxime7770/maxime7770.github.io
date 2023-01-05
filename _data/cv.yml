@@ -48,14 +48,15 @@
     - title: Student
       institution: CentraleSupélec
       year: 2020-2022
-      type: time_table
-      contents:
+      description:
         - title: Kaggle competition as part of a Machine Learning elecitve course
-          description: Classified geographical areas of interest represented as 300k+ rows of tabular data; designed 100+ new features with feature engineering methods; reached 72% F1-score with an XGBoost model; ranked 1st among more than 250 students of CentraleSupélec
+          contents: 
+            - Classified geographical areas of interest represented as 300k+ rows of tabular data; designed 100+ new features with feature engineering methods; reached 72% F1-score with an XGBoost model; ranked 1st among more than 250 students of CentraleSupélec
         - title: Research project on quantum computing
-          description: Explored quantum computing tools and applied Matrix Product State algorithms to simulate quantum circuits on classical computers; contributed to a 75-page handbook on quantum computing for future students based on my research; performed tensor-train decomposition for neural networks as part of the forecast of financial options for a French bank (Crédit Agricole); improved the accuracy with 90% fewer parameters
+          contents: 
+            - Explored quantum computing tools and applied Matrix Product State algorithms to simulate quantum circuits on classical computers; contributed to a 75-page handbook on quantum computing for future students based on my research; performed tensor-train decomposition for neural networks as part of the forecast of financial options for a French bank (Crédit Agricole); improved the accuracy with 90% fewer parameters
         - title: Member and trainer in Automatants, AI association of CentraleSupélec
-          description: 
+          contents: 
             - Conducted a group of 4 students for a Natural Language Processing project that aimed at exploring various tools and algorithms to summarize texts (NLTK, LSTM, GRU, Transformers)
             - Developed a web interface to recognize handwritten words in real-time
 
