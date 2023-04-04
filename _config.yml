@@ -125,8 +125,8 @@ pagination:
 # Follow instructions on https://giscus.app/ to setup for your repo to fill out
 # the information below.
 giscus:
-  repo: alshedivat/al-folio # <your-github-user-name>/<your-github-repo-name>
-  repo_id: MDEwOlJlcG9zaXRvcnk2MDAyNDM2NQ==
+  repo: maxime7770/maxime7770.github.io # <your-github-user-name>/<your-github-repo-name>
+  repo_id: 583567489
   category: Comments # name of the category under which discussions will be created
   category_id: DIC_kwDOA5PmLc4CTBt6
   mapping: title # identify discussions by post title
