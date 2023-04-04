@@ -15,6 +15,6 @@ profile:
 social: true  # includes social icons at the bottom of the page
 ---
 
-Hello, I'm Maxime and this is my blog
+Hello, I'm Maxime and this is my blog.
 I am an MEng student in France and I am currently working at AAICO in Dubai as an ML Engineer intern. I am mainly passionate about AI and Data Science and the applications to real-life issues. 
 Through this blog, I will try to talk about the projects I did, or subjects I am interested in. I hope you'll enjoy it. :smile:
