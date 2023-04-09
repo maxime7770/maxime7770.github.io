@@ -6,7 +6,7 @@ subtitle: MEng student at CentraleSupélec | ML Engineer at <a href='https://aai
 
 profile:
   align: right
-  image: 
+  image: assets/img/profile_image.jpg
   image_circular: false # crops the image to make it circular
   address:
 
