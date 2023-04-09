@@ -5,8 +5,8 @@ permalink: /
 subtitle: MEng student at CentraleSupélec | ML Engineer at <a href='https://aaico.com/'>AAICO</a> | maxwolf34@gmail.com
 
 profile:
-  align: left
-  image: profile_image.jpg
+  align: right
+  image: profil_image.jpg
   image_circular: true # crops the image to make it circular
   address:
 
