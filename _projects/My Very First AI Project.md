@@ -5,7 +5,7 @@ description: This is my first AI project, in which the goal was to develop a sys
 img:
 importance: 4
 category: fun
-redirect: projects/tfjs.html
+redirect: _projects/tfjs.html
 ---
 
 
