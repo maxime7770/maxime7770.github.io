@@ -5,7 +5,8 @@ description: This is my first AI project, in which the goal was to develop a sys
 img:
 importance: 4
 category: fun
-redirect: https://maxime7770.githu.io:_projects/tfjs.html
+redirect: https://maxime7770.github.io/projects/tfjs.html
 ---
 
+[Test link](https://maxime7770.github.io/projects/tfjs.html)
 
