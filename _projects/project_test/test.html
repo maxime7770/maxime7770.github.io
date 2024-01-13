@@ -39,9 +39,21 @@
         $(document).ready(function() {
             $('#submit').click(function() {
                 var userInput = $('#userInput').val();
-                // Here, add the code to send the userInput to your model
-                // For demonstration, I'm just echoing the input
-                $('#response').html('Response from model: ' + userInput);
+
+                $.ajax({
+                    url: '/predict',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ text: userInput }),
+                    success: function(response) {
+                        $('#response').html('Response from model: ' + response.response);
+                    },
+                    error: function(error) {
+                        $('#response').html('Error: ' + error.responseText);
+                    }
+                });
+            });
+
 
                 // Example AJAX request (update with your actual API endpoint and method)
                 /*
@@ -59,7 +71,6 @@
                 });
                 */
             });
-        });
     </script>
 </body>
 </html>
