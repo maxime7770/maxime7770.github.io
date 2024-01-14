@@ -5,8 +5,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 app = Flask(__name__)
 
 # Load model and tokenizer
-model = AutoModelForCausalLM.from_pretrained("microsoft/phi-2", torch_dtype="auto", trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-2", trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained("tiny_llm", torch_dtype="auto")
+tokenizer = AutoTokenizer.from_pretrained("tiny_llm")
 
 @app.route('/predict', methods=['POST'])
 def predict():
