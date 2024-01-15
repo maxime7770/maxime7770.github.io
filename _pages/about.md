@@ -15,6 +15,15 @@ profile:
 social: true  # includes social icons at the bottom of the page
 ---
 
-Hi there, I'm Maxime :wave:
-I am an MEng student in France at CentraleSupélec where I mostly study Applied Mathematics and Data Science. I am also working at AAICO as an ML Engineer. I am passionate about AI and Data Science and the applications to real-life issues. In addition to this, I love staying up-to-date with the latest advancements in research in these fields, and all the exciting new developments that are constantly emerging.
-Through this blog, I will share projects, blogs, thoughts, or things I'm interested in. Hope you'll enjoy it! :smile:
+Hello! I'm Maxime :wave:a Masters of Business Analytics (MBAn) candidate at MIT.. Here are three quick facts about me:
+
+- 📊 Data Science and Research at MIT: At MIT, I'm expanding my expertise through business analytics and participating in collaborative projects that tackle complex real-world challenges.  I'm also pursuing research at the Operation Research Center (ORC) at the intersection of Optimization and Machine Learning.
+- 🌍 Global Journey - From France to UAE & USA: My professional path has taken me around the globe. From the insurance sector in France to healthcare in the UAE, and transportation in the US, I've been able to work in global environments and in different industries.
+- 💡 Passion for AI & Data Science: I've immersed myself in various personal projects and hackathons and I enjoy working on challenging problems. You can find more details on my [GitHub](https://github.com/maxime7770)!
+
+Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with me on [Linkedin](https://www.linkedin.com/in/maxime-wolf/). Looking forward to connecting!
+
+
+
+
+
