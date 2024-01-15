@@ -2,7 +2,7 @@
 layout: about
 title: About
 permalink: /
-subtitle: MEng student at CentraleSupélec | ML Engineer at <a href='https://aaico.com/'>AAICO</a> | maxwolf34@gmail.com
+subtitle: 
 
 profile:
   align: right
