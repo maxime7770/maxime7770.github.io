@@ -4,7 +4,6 @@ permalink: /repositories/
 title: Repositories
 description: My main (and most interesting) respositories.
 nav: false
-nav_order: 3
 ---
 
 ## GitHub users
