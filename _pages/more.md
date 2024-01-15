@@ -9,5 +9,5 @@ children:
       permalink: /repositories/
     - title: CV
       newtab: true
-      permalink: /assets/pdf/CV_Maxime_Wolf.pdf
+      permalink: /assets/pdf/Resume_Wolf_Maxime.pdf
 ---
