@@ -5,4 +5,5 @@ title: CV
 nav: true
 nav_order: 4
 cv_pdf: CV_Maxime_Wolf.pdf
+redirect: https://maxime7770.github.io/assets/pdf/CV_Maxime_Wolf.pdf
 ---
