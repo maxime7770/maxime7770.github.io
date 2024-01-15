@@ -15,6 +15,6 @@ profile:
 social: true  # includes social icons at the bottom of the page
 ---
 
-Hello there, I'm Maxime :wave:
+Hi there, I'm Maxime :wave:
 I am an MEng student in France at CentraleSupélec where I mostly study Applied Mathematics and Data Science. I am also working at AAICO as an ML Engineer. I am passionate about AI and Data Science and the applications to real-life issues. In addition to this, I love staying up-to-date with the latest advancements in research in these fields, and all the exciting new developments that are constantly emerging.
 Through this blog, I will share projects, blogs, thoughts, or things I'm interested in. Hope you'll enjoy it! :smile:
