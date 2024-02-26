@@ -3,7 +3,7 @@ layout: page
 title: Sherlock Picasso
 description: Marketing made easy. We built a product to help SMBs attract customers on social media.
 img: assets/img/project_cma_cgm_cover.png
-importance: 1
+importance: 2
 category: MIT
 ---
 

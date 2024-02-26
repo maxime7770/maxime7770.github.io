@@ -3,7 +3,7 @@ layout: page
 title: Analytics for BigTechs in 2023-2024
 description: A closer look at how the biggest tech players are using analytics to advance their key priorities.
 img: assets/img/analytics_bigtechs_2024_cover.jpeg
-importance: 4
+importance: 6
 category: MIT
 ---
 
