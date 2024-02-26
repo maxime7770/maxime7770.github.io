@@ -9,7 +9,6 @@ category: MIT
 
 This project was developed as part of the 2024 Google Product Management Hackathon at MIT.
 
-
 ## Team
 
 Team Members:
