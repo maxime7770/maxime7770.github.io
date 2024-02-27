@@ -28,4 +28,3 @@ Team Members:
 <div class="caption">
     A summary of the key features and benefits of Sherlock Picasso
 </div>
-
