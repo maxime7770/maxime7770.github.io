@@ -33,10 +33,7 @@ Team Members:
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        <video class="img-fluid rounded z-depth-1" controls>
-            <source src="assets/img/project_google_pm_hackathon/Demo-Sherlock-Picasso.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        {% include video.html path="assets/img/project_google_pm_hackathon/Demo-Sherlock-Picasso.mp4" %}
     </div>
 </div>
 <div class="caption">
