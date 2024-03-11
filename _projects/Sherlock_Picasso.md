@@ -31,10 +31,12 @@ Team Members:
 
 ## Video Demo
 
-<div class="row">
+
+<div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
-        {% include video.html path="assets/img/project_google_pm_hackathon/Demo-Sherlock-Picasso.mp4" %}
+        {% include video.html path="assets/img/project_google_pm_hackathon/Demo-Sherlock-Picasso.mp4" class="img-fluid rounded z-depth-1" controls=true autoplay=false %}
     </div>
+
 </div>
 <div class="caption">
     A video demo of Sherlock Picasso
