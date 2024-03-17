@@ -27,3 +27,11 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 
 
 
+### Recent Achievements
+Here are some of my recent achievements that I'm particularly proud of:
+
+- ⭐ [**AI-based Market Analysis Tool**](https://github.com/maxime7770/AI-Market-Analysis-Tool): Developed an innovative tool that leverages machine learning to predict market trends with remarkable accuracy.
+- ⭐ [**Healthcare Data Visualization Platform**](https://github.com/maxime7770/Healthcare-Data-Visualization): Created a platform for visualizing healthcare data, enhancing the ability of professionals to make informed decisions.
+- ⭐ [**Sustainable Urban Mobility Project**](https://github.com/maxime7770/Sustainable-Urban-Mobility): Contributed to a project aimed at improving urban mobility through sustainable solutions.
+
+These projects reflect my commitment to leveraging data science and AI to solve complex problems and make a positive impact in various sectors.
