@@ -32,6 +32,6 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 ### Recent Achievements
 Here are some of my recent achievements that I'm particularly proud of:
 
-- ⭐ [**Sherlock Picasso**](https://github.com/maxime7770/Sherlock-Picasso): Won 2nd place at the Google x MIT Sloan Product Hackathon
-- ⭐ [**MIT Analytics Lab**](https://maxime7770.github.io/projects/AI_Powered_Email_Assistant_for_CMA-CGM/): Won 3rd place at the MIT Initiative on the Digital Economy’s Analytics Lab Event
-- ⭐ [**AI Earth Hackathon**](https://github.com/maxime7770/Sustainable-Urban-Mobility): Ranked Top 15% in the AI Earth Hackathon organized by the Digital Data Design (D^3) Institute at Harvard University
+- ⭐ [**Sherlock Picasso**](https://github.com/maxime7770/Sherlock-Picasso): Won **2nd place** at the Google x MIT Sloan Product Hackathon
+- ⭐ [**MIT Analytics Lab**](https://maxime7770.github.io/projects/AI_Powered_Email_Assistant_for_CMA-CGM/): Won **3rd place** at the MIT Initiative on the Digital Economy’s Analytics Lab Event
+- ⭐ [**AI Earth Hackathon**](https://github.com/maxime7770/Sustainable-Urban-Mobility): Ranked **Top 15%** in the AI Earth Hackathon organized by the Digital Data Design (D^3) Institute at Harvard University
