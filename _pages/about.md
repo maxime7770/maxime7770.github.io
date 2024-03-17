@@ -27,7 +27,9 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 
 <br />
 <br />
+
 ---
+
 <br />
 <br />
 
