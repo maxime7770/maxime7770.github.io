@@ -17,7 +17,7 @@ social: true  # includes social icons at the bottom of the page
 
 Hello! :wave:  I'm Maxime, a Masters in Business Analytics (MBAn) candidate at MIT. Here are three quick facts about me:
 
-- 📊 Data Science and Research: At MIT, I'm expanding my expertise through business analytics and participating in collaborative projects that tackle complex real-world challenges.  I'm also pursuing research at the MIT Operation Research Center (ORC) at the intersection of Optimization and Reinforcement Learning.
+- 📊 Data Science and Research: At MIT, I'm expanding my expertise through business analytics and participating in collaborative projects that tackle complex real-world challenges.  I'm also pursuing research at the MIT Operation Research Center (ORC) at the intersection of Optimization and Reinforcement Learning, under the supervision of Professor Georgia Perakis.
 - 🌍 Global Journey - From France to UAE & USA: My professional path has taken me around the globe. From the insurance sector in France to healthcare in the UAE, and transportation in the US, I've been able to work in global environments and in different industries.
 - 💡 Passion for AI & Data Science: I've immersed myself in various personal projects and hackathons and I enjoy working on challenging problems. You can find more details on my [GitHub](https://github.com/maxime7770)!
 
