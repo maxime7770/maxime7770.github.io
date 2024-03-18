@@ -32,6 +32,9 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 <br />
 <br />
 
+![Alt text for the GIF](assets/img/giphy.gif)
+
+
 ### Recent Achievements
 Here are some of my recent achievements that I'm particularly proud of:
 
