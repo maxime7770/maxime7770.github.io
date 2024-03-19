@@ -38,13 +38,11 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 <table>
   <tr>
     <td><img src="assets/img/giphy.gif" alt="First GIF" style="width: 100px;"></td>
-    <td>CHECK MY PORTFOLIO HERE</td>
+    <td style="font-size: 20px; font-weight: bold;">Recent Achievements</td>
     <td><img src="assets/img/giphy.gif" alt="Second GIF" style="width: 100px;"></td>
   </tr>
 </table>
 
-
-### Recent Achievements
 Here are some of my recent achievements that I'm particularly proud of:
 
 - [Sherlock Picasso](https://github.com/maxime7770/Sherlock-Picasso): Won **2nd place** ⭐ and a **prize of $3000** at the Google x MIT Sloan Product Hackathon
