@@ -3,11 +3,16 @@ github_users:
 
 github_repos:
   - maxime7770/NER-Medical-Document
+  - maxime7770/Sherlock-Picasse
+  - maxime7770/AI-Earth-Hackathon
+  - maxime7770/Diabetes-Classes-Prediction
+  - maxime7770/Optimal-Bus-Stops-Selection
+  - maxime7770/Analytics-Edge-Song-Predictor
+  - maxime7770/VAE
+  - maxime7770/Stable-Diffusion
   - maxime7770/Chess
-  - maxime7770/OOrion
   - maxime7770/ML-Competition
   - maxime7770/Handwriting-Recognition
-  - maxime7770/VAE
   - maxime7770/Quantum-Computing-Textbook
   - maxime7770/Time-Series-Prediction
   - maxime7770/EfficientNet-Evaluation
