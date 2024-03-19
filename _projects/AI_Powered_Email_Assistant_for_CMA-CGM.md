@@ -66,7 +66,7 @@ A full view of the integrated processing pipeline is shown below:
     Integrated processing pipeline
 </div>
 
-## User-friendly web interface
+## User-friendly Web Interface
 
 We also built a user-friendly web interface that customer care agents can interact with. The interface not only generates recommended replies to emails, but also provides an option for the customer agent to correct any misidentified categories, enabling more accurate responses.
 
