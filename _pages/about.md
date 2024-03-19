@@ -33,7 +33,15 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 <br />
 
 <!-- ![Alt text for the GIF](assets/img/giphy.gif) -->
-<img src="assets/img/giphy.gif" width="100" alt="Example GIF">
+<!-- <img src="assets/img/giphy.gif" width="100" alt="Example GIF"> -->
+
+<table>
+  <tr>
+    <td><img src="assets/img/giphy.gif" alt="First GIF" style="width: 100px;"></td>
+    <td>CHECK MY PORTFOLIO HERE</td>
+    <td><img src="assets/img/giphy.gif" alt="Second GIF" style="width: 100px;"></td>
+  </tr>
+</table>
 
 
 ### Recent Achievements
