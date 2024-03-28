@@ -1,27 +1,31 @@
 <!-- ---
 layout: post
-title: a post with math
+title: N-sphere and Curse of Dimensionality
 date: 2015-10-20 11:12:00-0400
 description: an example of a blog post with some math
-tags: formatting math
+tags: math
 categories: sample-posts
 ---
-This theme supports rendering beautiful math in inline and display modes using [MathJax 3](https://www.mathjax.org/) engine. You just need to surround your math expression with `$$`, like `$$ E = mc^2 $$`. If you leave it inside a paragraph, it will produce an inline expression, just like $$ E = mc^2 $$.
 
-To use display mode, again surround your expression with `$$` and place it as a separate paragraph. Here is an example:
+In this post, we will discuss the concept of an N-sphere and the curse of dimensionality. The N-sphere is a generalization of the ordinary sphere to arbitrary dimensions. It is defined as the set of points in (N+1)-dimensional Euclidean space that are at a fixed distance from a central point. The equation of an N-sphere is given by:
 
 $$
-\sum_{k=1}^\infty |\langle x, e_k \rangle|^2 \leq \|x\|^2
+x_1^2 + x_2^2 + \ldots + x_{N+1}^2 = r^2
 $$
 
-You can also use `\begin{equation}...\end{equation}` instead of `$$` for display mode math.
-MathJax will automatically number equations:
+where $r$ is the radius of the sphere. The N-sphere is a fundamental object in geometry and has many interesting properties.
 
-\begin{equation}
-\label{eq:cauchy-schwarz}
-\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
-\end{equation}
+One of the most important properties of the N-sphere is its volume. The volume of an N-sphere of radius $r$ is given by:
 
-and by adding `\label{...}` inside the equation environment, we can now refer to the equation using `\eqref`.
+$$
+V_N(r) = \frac{\pi^{(N+1)/2}}{\Gamma((N+1)/2)} r^{N+1}
+$$
 
-Note that MathJax 3 is [a major re-write of MathJax](https://docs.mathjax.org/en/latest/upgrading/whats-new-3.0.html) that brought a significant improvement to the loading and rendering speed, which is now [on par with KaTeX](http://www.intmath.com/cg5/katex-mathjax-comparison.php). -->
+where $\Gamma$ is the gamma function. The volume of the N-sphere grows rapidly with the dimension $N$. This has important implications for machine learning and data analysis.
+
+
+
+
+
+
+ -->
