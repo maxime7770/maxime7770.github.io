@@ -6,7 +6,7 @@ description: My projects. You can find more on my GitHub.
 nav: true
 nav_order: 2
 display_categories: [MIT, Personal projects]
-horizontal: false
+horizontal: true
 ---
 
 <!-- pages/projects.md -->
