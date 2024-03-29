@@ -18,20 +18,24 @@ horizontal: false
   {%- assign categorized_projects = site.projects | where: "category", category -%}
   {%- assign sorted_projects = categorized_projects | sort: "importance" %}
   <div class="container">
-    <!-- Generate cards for each project in a single column -->
+    <!-- Generate cards for each project in three columns -->
+    <div class="row row-cols-3">
     {%- for project in sorted_projects -%}
       {% include projects.html %}
     {%- endfor %}
+    </div>
   </div>
   {% endfor %}
 {%- else -%}
   <!-- Display projects without categories -->
   {%- assign sorted_projects = site.projects | sort: "importance" -%}
   <div class="container">
-    <!-- Generate cards for each project in a single column -->
+    <!-- Generate cards for each project in three columns -->
+    <div class="row row-cols-3">
     {%- for project in sorted_projects -%}
       {% include projects.html %}
     {%- endfor %}
+    </div>
   </div>
 {%- endif -%}
 </div>
