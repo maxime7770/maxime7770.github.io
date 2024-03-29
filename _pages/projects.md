@@ -2,7 +2,7 @@
 layout: page
 title: Projects
 permalink: /projects/
-description: My projects. In progress...
+description: My projects. You can find more on my GitHub.
 nav: true
 nav_order: 2
 display_categories: [MIT, Personal projects]
