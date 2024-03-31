@@ -1,7 +1,7 @@
-<!-- ---
+---
 layout: page
 title: More
-nav: true
+nav: false
 nav_order: 4
 dropdown: true
 children: 
@@ -10,4 +10,4 @@ children:
     - title: CV
       newtab: true
       permalink: /assets/pdf/Resume_Wolf_Maxime.pdf
---- -->
+---
