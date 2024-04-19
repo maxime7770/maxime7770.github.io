@@ -7,6 +7,8 @@ tags: math
 categories:
 ---
 
+### Introduction
+
 This post is an extension of my Medium article: *The Math Behind "The Curse of Dimensionality"*.
 
 Here, I derive the formula for the volume of the n-ball using integral calculus and Wallis integrals.
@@ -20,7 +22,10 @@ $$
 x_1^2 + x_2^2 + \ldots + x_{N}^2 \leq r^2
 $$
 
-where $r$ is the radius of the ball.
+where $$r$$ is the radius of the ball.
+
+
+### Derivation of the volume formula
 
 One of the most important properties of the n-ball is its volume. The volume of an n-ball of radius $$r$$ is given by:
 
@@ -72,9 +77,10 @@ V_n &= V_{n-1}\int_{-1}^{1} (1-x^2)^{n-1} dx \\
 \end{align*}
 $$
 
-We notes $$I_n = 2\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$.
+We note $$I_n = 2\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$.
 
-Note that $$\int\limits_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$ is a famous integral in mathematics: it is called the Wallis integral and often denoted by $$W_n$$. It can be derived using integration by parts (you can refer to the corresponding Wikipedia article for this). Depending on the parity of $$n$$, the integral can be expressed as:
+Note that $$\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$ is a famous integral in mathematics: it is called the Wallis integral and often denoted by $$W_n$$. It can be derived using integration by parts (I will prove this formula in the [appendix](#derivation-of-the-wallis-integrals)). Depending on the parity of $$n$$, the integral can be expressed as:
+
 
 $$
 W_{2p} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2}
@@ -85,7 +91,7 @@ W_{2p+1} = \frac{2^{2p} (p!)^2}{(2p+1)!}
 $$
 
 Using our recursive relation, we know that:
-$$ V_n = I_n I_{n-1} \dots I_2 V_1$ and $V_1 = V_1(1) = 2$$ (the length of the segment $[-1, 1]$ ).
+$$ V_n = I_n I_{n-1} \dots I_2 V_1$$ and $$V_1 = V_1(1) = 2$$ (the length of the segment $$[-1, 1]$$ ).
 
 We are going to make use of a very useful property:
 $$
@@ -151,6 +157,64 @@ $$
 $$
 
 Paricularly, the surface area of the n-ball of radius $$1$$ is:
+
 $$
 S_n = n \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)} = \frac{2 \pi^{n/2}}{\Gamma(\frac{n}{2})}
+$$
+
+
+----
+
+### <a name="#Wallis"></a> Appendix: Derivation of the Wallis integrals 
+
+The Wallis integrals are defined as:
+
+$$
+W_{n} = \int_{0}^{\pi/2} \sin^{n}(\theta) d\theta
+$$
+
+We will derive a recursive formula using integration by parts.
+
+$$
+\begin{align*}
+W_n &= \int_{0}^{\pi/2} \sin^{n}(\theta) d\theta \\
+&= \int_{0}^{\pi/2} \sin^{n-2}(\theta) (1- \cos^2(\theta)) d\theta \\
+&= W_{n-2} - \int_{0}^{\pi/2} \sin^{n-2}(\theta) \cos^2(\theta) d\theta \\
+&= W_{n-2} - \left(\left[\frac{\sin^{n-1}(\theta)}{n-1}\cos(\theta) \right]_0^{\pi/2} - \frac{1}{n-1} \int_0^{\pi/2}-\sin^{n-1}(\theta)\sin(x)d\theta\right) \\
+&= W_{n-2} - \frac{1}{n-1} W_{n}
+\end{align*}
+$$
+
+We conclude that:
+
+$$
+W_n = \frac{n-1}{n} W_{n-2}
+$$
+
+We can now distinguish 2 cases depending on the parity of $$n$$:
+
+- If $$n = 2p$$, we have:
+
+$$
+W_{2p} = \frac{2p-1}{2p} W_{2p-2} = \frac{2p-1}{2p} \frac{2p-3}{2p-2} \dots \frac{1}{2} W_0 = \frac{2p-1}{2p} \frac{2p-3}{2p-2} \dots \frac{1}{2} \frac{\pi}{2} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2}
+$$
+
+We obtained the last equality by multiplying the denominator and the numerator by $$2p(2p-2)\dots 2$$ to make $$(2p)!$$ appear. We then factorized each term of the denominator by 2.
+
+- Similarly, if $$n = 2p+1$$, we have:
+
+$$
+W_{2p+1} = \frac{2p}{2p+1} W_{2p-1} = \frac{2p}{2p+1} \frac{2p-2}{2p-1} \dots \frac{2}{3} W_1 = \frac{2p}{2p+1} \frac{2p-2}{2p-1} \dots \frac{2}{3} \frac{2}{1} = \frac{2^{2p} (p!)^2}{(2p+1)!}
+$$
+
+We conclude that 
+
+$$
+\boxed{W_{2p} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2}}
+$$
+
+and
+
+$$
+\boxed{W_{2p+1} = \frac{2^{2p} (p!)^2}{(2p+1)!}}
 $$
