@@ -79,7 +79,7 @@ $$
 
 We note $$I_n = 2\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$.
 
-Note that $$\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$ is a famous integral in mathematics: it is called the Wallis integral and often denoted by $$W_n$$. It can be derived using integration by parts (I will prove this formula in the [appendix](#derivation-of-the-wallis-integrals)). Depending on the parity of $$n$$, the integral can be expressed as:
+Note that $$\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$ is a famous integral in mathematics: it is called the Wallis integral and often denoted by $$W_n$$. It can be derived using integration by parts (I will prove this formula in the [appendix](https://www.maximewolf.com/blog/2024/The-Volume-of-the-nball/#derivation-of-the-wallis-integrals)). Depending on the parity of $$n$$, the integral can be expressed as:
 
 
 $$
@@ -90,19 +90,22 @@ $$
 W_{2p+1} = \frac{2^{2p} (p!)^2}{(2p+1)!}
 $$
 
-Using our recursive relation, we know that:
-$$ V_n = I_n I_{n-1} \dots I_2 V_1$$ and $$V_1 = V_1(1) = 2$$ (the length of the segment $$[-1, 1]$$ ).
+Using our recursive relation, we know that: $$ V_n = I_n I_{n-1} \dots I_2 V_1$$ and $$V_1 = V_1(1) = 2$$ (the length of the segment $$[-1, 1]$$ ).
 
 We are going to make use of a very useful property:
+
 $$
 I_{2p}I_{2p+1} = 4W_{2p}W_{2p+1} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2} \frac{2^{2p} (p!)^2}{(2p+1)!} = \frac{2\pi}{2p+1} = \frac{\pi}{p+1/2}
 $$
 
 We will also need the Gamma function. All you need to know is these 2 expressions:
+
 $$
 \Gamma(n) = (n-1)!
 $$
+
 and
+
 $$
 \Gamma(n+1/2) = (n+1/2)\times(n-1/2)\times \dots \times 1/2 \times \pi ^{1/2}
 $$
@@ -161,6 +164,10 @@ Paricularly, the surface area of the n-ball of radius $$1$$ is:
 $$
 S_n = n \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)} = \frac{2 \pi^{n/2}}{\Gamma(\frac{n}{2})}
 $$
+
+
+<br>
+<br>
 
 
 ----
