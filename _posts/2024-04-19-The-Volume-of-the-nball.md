@@ -79,7 +79,7 @@ $$
 
 We note $$I_n = 2\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$.
 
-Note that $$\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$ is a famous integral in mathematics: it is called the Wallis integral and often denoted by $$W_n$$. It can be derived using integration by parts (I will prove this formula in the [appendix](https://www.maximewolf.com/blog/2024/The-Volume-of-the-nball/#derivation-of-the-wallis-integrals)). Depending on the parity of $$n$$, the integral can be expressed as:
+Note that $$\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta$$ is a famous integral in mathematics: it is called the Wallis integral and often denoted by $$W_n$$. It can be derived using integration by parts (I will prove this formula in the [appendix](#appendix-derivation-of-the-wallis-integrals)). Depending on the parity of $$n$$, the integral can be expressed as:
 
 
 $$
@@ -172,7 +172,7 @@ $$
 
 ----
 
-### <a name="#Wallis"></a> Appendix: Derivation of the Wallis integrals 
+### <a name="#Appendix: Derivation of the Wallis integrals"></a> Appendix: Derivation of the Wallis integrals
 
 The Wallis integrals are defined as:
 
