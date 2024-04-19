@@ -172,7 +172,7 @@ $$
 
 ----
 
-### <a name="#Appendix: Derivation of the Wallis integrals"></a> Appendix: Derivation of the Wallis integrals
+### Appendix: Derivation of the Wallis integrals
 
 The Wallis integrals are defined as:
 
