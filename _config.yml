@@ -15,7 +15,7 @@ footer_text: >
   Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
 keywords: maximewolf, maxime-wolf, blog, data-science, AI, engineering, portfolio, projects # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
-icon: tada.png # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
+icon: memo.png # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://www.maximewolf.com/ # the base hostname & protocol for your site
 baseurl: # the subpath of your site, e.g. /blog/
