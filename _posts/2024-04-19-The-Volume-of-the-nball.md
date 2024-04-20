@@ -60,16 +60,16 @@ $$
 \begin{align*}
 V_n &= \int_{x_1^2 \leq 1} V_{n-1}\left(\sqrt{1-x_1^2} \right) dx_1 \\
 &= V_{n-1}\int_{x_1^2 \leq 1} \left(\sqrt{1-x_1^2}\right)^{n-1} dx_1 \\
-&= V_{n-1}\int_{-1}^{1} (1-x^2)^{n-1} dx
+&= V_{n-1}\int_{-1}^{1} \left(\sqrt{1-x^2}\right)^{n-1} dx
 
 \end{align*}
 $$
 
-We use the change of variable $$x = \cos(\theta)$$ (so $dx = -\sin(\theta) d\theta$) to simplify the integral:
+We use the change of variable $$x = \cos(\theta)$$ (so $$dx = -\sin(\theta) d\theta$$) to simplify the integral:
 
 $$
 \begin{align*}
-V_n &= V_{n-1}\int_{-1}^{1} (1-x^2)^{n-1} dx \\
+V_n &= V_{n-1}\int_{-1}^{1} \left(\sqrt{1-x^2}\right)^{n-1} dx \\
 &= -V_{n-1}\int_{\pi}^{0} \sin^{n-1}(\theta) \sin(\theta) d\theta \\
 &= V_{n-1}\int_{0}^{\pi} \sin^{n}(\theta) d\theta \\
 &= 2 V_{n-1}\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta \\
