@@ -4,6 +4,7 @@ title: The Volume of the n-ball
 date: 2024-04-19 00:00:00 +0000
 description: Derivation of the formula for the volume of the n-ball.
 tags: math
+categories: math
 giscus_comments: true
 ---
 
