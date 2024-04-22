@@ -10,7 +10,7 @@ giscus_comments: true
 
 ### Introduction
 
-This post is an extension of my Medium article: *The Math Behind "The Curse of Dimensionality"*.
+This post is an extension of my Medium article: [*The Math Behind "The Curse of Dimensionality"*](https://medium.com/towards-data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74).
 
 Here, I derive the formula for the volume of the n-ball using integral calculus and Wallis integrals.
 
