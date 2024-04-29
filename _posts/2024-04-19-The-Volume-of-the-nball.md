@@ -50,7 +50,7 @@ Now, let’s simplify $$V_n$$:
 $$
 \begin{align*}
 V_n &= \int_{x_1^2 + \dots + x_n^2 \leq 1} dx_1 dx_2\dots dx_n \\
- &= \int_{x_1^2 \leq 1} \left( \int_{x_2^2 + \dots + x_n^2 \leq 1 - x_1^2} dx_1 dx_2\dots dx_n \right) dx_1 \\
+ &= \int_{x_1^2 \leq 1} \left( \int_{x_2^2 + \dots + x_n^2 \leq 1 - x_1^2} dx_2\dots dx_n \right) dx_1 \\
 &=  \int_{x_1^2 \leq 1} V_{n-1}\left(\sqrt{1-x_1^2}\right) dx_1
 \end{align*}
 $$
