@@ -108,7 +108,7 @@ $$
 and
 
 $$
-\Gamma(n+1/2) = (n+1/2)\times(n-1/2)\times \dots \times 1/2 \times \pi ^{1/2}
+\Gamma(n+1/2) = (n-1/2)\times \dots \times 1/2 \times \pi ^{1/2}
 $$
 
 Now, we can easily compute the volume $$V_n$$ by grouping successive terms, depending again on the parity of $$n$$.
@@ -133,7 +133,7 @@ $$
 \begin{align*}
 V_{2p+1} &= I_{2p+1}I_{2p}I_{2p-1} \dots I_2 V_1 \\
 &= (I_{2p+1}I_{2p})(I_{2p-1}I_{2p-2}) \dots (I_3I_2)\times 2 \\
-&= \frac{\pi}{p+1/2} \times \frac{\pi}{p-1/2} \times \frac{\pi}{p-3/2}\times  \dots \times \frac{\pi}{3/2} \times \frac{\pi}{1/2} \\
+&= \frac{\pi}{p+1/2} \times \frac{\pi}{p-1/2} \times \frac{\pi}{p-3/2}\times  \dots \times \frac{\pi}{3/2} \times \frac{1}{1/2} \\
 &= \frac{\pi^{p+\frac{1}{2}}}{(p+1/2)(p-1/2)\dots (1/2) \pi ^ {\frac{1}{2}}} \\
 &= \frac{\pi^{p+\frac{1}{2}}}{\Gamma(p+\frac{1}{2} + 1)} \\
 &= \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)}
