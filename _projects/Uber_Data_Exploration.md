@@ -11,4 +11,4 @@ category: MIT
 
 Embed test
 
-<iframe src="https://www.maximewolf.com/projects/uber.html" width="1800" height="900"></iframe>
+<iframe src="https://www.maximewolf.com/projects/uber.html" width="1200" height="900"></iframe>
