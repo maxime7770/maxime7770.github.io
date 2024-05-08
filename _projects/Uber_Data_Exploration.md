@@ -12,7 +12,7 @@ category: MIT
 This project was developed as part of the Marketing Analytics course at MIT Sloan.
 
 
-<iframe src="https://www.maximewolf.com/projects/uber.html" width="1000" height="500"></iframe>
+<iframe src="https://www.maximewolf.com/projects/uber.html" width="1200" height="500"></iframe>
 
 
 We desined a dashboard that can be useful for Uber managers to analyze and visualize the data from Uber drives in New York City. The dashboard provides insights into hourly rides, average tips, wait times, driver pay, and shared-ride coordination. The data-driven approach ensures that managerial decisions are well-informed and strategically sound.
