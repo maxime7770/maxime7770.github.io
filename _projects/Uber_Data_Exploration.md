@@ -2,7 +2,7 @@
 layout: page
 title: Uber Data Exploration
 description: Analyzing and visualizing the data from Uber drives in New York City.
-img:
+img: assets/img/project_uber_data_cover.png
 importance: 8
 category: MIT
 ---
