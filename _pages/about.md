@@ -17,7 +17,7 @@ social: true  # includes social icons at the bottom of the page
 
 Hello! :wave:  I'm Maxime, a Masters in Business Analytics (MBAn) candidate at MIT.
 
-My academic focus is on machine learning and deep learning, where I am involved in collaborative projects that address complex real-world challenges. Additionally, I conduct research at the MIT Operations Research Center and in collaboration with IBM, at the intersection of optimization and machine learning under the supervision of Professor Georgia Perakis.
+My academic focus is on machine learning and deep learning, where I am involved in collaborative projects that address complex real-world challenges. Additionally, I conduct research at the MIT Operations Research Center in collaboration with IBM, at the intersection of optimization and machine learning under the supervision of Professor Georgia Perakis.
 
 I have a deep passion for AI, particularly in natural language processing (NLP), and have engaged in numerous hackathons and personal projects. You can find more details on my [GitHub](https://github.com/maxime7770).
 
