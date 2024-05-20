@@ -39,7 +39,7 @@ In the rest of this post, we will derive this formula.
 
 We define the unit (radius equal to 1) n-ball as the following space: $$\mathcal{B}_n = \{x_1, \dots, x_m; \sum\limits_{i=1}^n x_i^2 \leq 1 \}$$ 
 
-We note $$V_n = V_n(1)$$ the volume of this ball. And more generally $V_n(R)$ the volume of the n-ball with radius $R$. From now on, we will use $$V_n$$ to refer to the volume of the unit n-ball:
+We note $$V_n = V_n(1)$$ the volume of this ball. And more generally $$V_n(R)$$ the volume of the n-ball with radius $$R$$. From now on, we will use $$V_n$$ to refer to the volume of the unit n-ball:
 
 $$V_n = \int_{x \in \mathcal{B}_n} dx_1 dx_2\dots dx_n$$
 
@@ -91,7 +91,7 @@ $$
 W_{2p+1} = \frac{2^{2p} (p!)^2}{(2p+1)!}
 $$
 
-Using our recursive relation, we know that: $$ V_n = I_n I_{n-1} \dots I_2 V_1$$ and $$V_1 = V_1(1) = 2$$ (the length of the segment $$[-1, 1]$$ ).
+Using our recursive relation, we know that: $$ V_n = I_n I_{n-1} \dots I_2 V_1$$ and $$V_1 = V_1(1) = 2$$ (the length of the segment $$[-1, 1]$$).
 
 We are going to make use of a very useful property:
 
