@@ -53,7 +53,7 @@ CMA CGM is the largest shipping company in the United States and handles more th
 
 ## Integrated Processing Pipeline
 
-This email assistant leverages both technical tools such as LLMs and NLP as well as business domain knowledge to produce relevant and useful replies. Specifically, the process begins by classifying emails based on their potential for automation. Depending on whether clear tasks are identified or not, we employ GPT-3.5 or similarity detection methods to generate an appropriate response.
+This email assistant leverages both technical tools such as LLMs and NLP as well as business domain knowledge to produce relevant and useful replies. Specifically, the process begins by classifying emails based on their potential for automation. Depending on whether clear tasks are identified or not, we employ GPT-3.5 or similarity detection methods to retrieve information from the database (RAG) or generate an appropriate response.
 
 A full view of the integrated processing pipeline is shown below:
 
