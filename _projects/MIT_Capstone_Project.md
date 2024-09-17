@@ -1,6 +1,6 @@
 ---
 layout: page
-title: MIT_Capstone_Project
+title: MIT Capstone Project
 description: Worked with Comcast to predicting churn in real-time using NLP & LLMs
 img: assets/img/analytics_bigtechs_2024_cover.jpeg
 importance: 1
@@ -19,7 +19,7 @@ Team Members:
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/pdf/Comcast - Predicting Churn in Real-time - Poster.pdf" title="poster" class="img-fluid rounded z-depth-1" %}
+        <embed src="assets/img/pdf/Comcast - Predicting Churn in Real-time - Poster.pdf" type="application/pdf" width="100%" height="600px" class="rounded z-depth-1">
     </div>
 </div>
 <div class="caption">
