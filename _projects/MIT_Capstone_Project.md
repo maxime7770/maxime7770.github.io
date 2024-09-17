@@ -1,7 +1,7 @@
 ---
 layout: page
 title: MIT Capstone Project
-description: Worked with Comcast to predict churn in real-time using NLP & LLMs
+description: Worked with Comcast to predict churn in real-time from call transcripts using NLP & LLMs
 img: assets/img/mit_capstone_proect_cover.jpg
 importance: 1
 category: MIT
