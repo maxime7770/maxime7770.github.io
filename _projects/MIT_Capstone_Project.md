@@ -13,7 +13,7 @@ This project was developed as part of the Capstone course at MIT, and in collabo
 
 Team Members:
 [Maxime Wolf](https://www.linkedin.com/in/maxime-wolf/),
-[Dilan SriDaran](https://www.linkedin.com/in/dilan-sridaran/)
+[Dilan SriDaran](https://www.linkedin.com/in/dilansridaran/)
 
 ## Poster
 
