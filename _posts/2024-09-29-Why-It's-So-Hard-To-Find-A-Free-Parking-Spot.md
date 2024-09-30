@@ -100,8 +100,9 @@ The radius of convergence $$R$$ of this series is defined as the supremum of the
 We also have:
 
 $$
-\left| g(z) \right| \leq \sum_{n=0}^{\infty} \left|u_n\right| \left|z\right|^n \leq \sum_{n=0}^{\infty} n\left|z\right|^n 
+\left| g(z) \right| \leq \sum_{n=0}^{\infty} \left|u_n\right| \left|z\right|^n \leq \sum_{n=0}^{\infty} n\left|z\right|^n
 $$
+
 
 So the series converges for $$\left|z\right|<1$$ and the radius of convergence verifies $$R \geq 1$$.
 
