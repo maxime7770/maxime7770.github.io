@@ -103,7 +103,7 @@ $$
 |g(z)| \leq \sum_{n=0}^{\infty} |u_n| |z|^n \leq \sum_{n=0}^{\infty} n|z|^n 
 $$
 
-the series converges for $$|z| < 1$$ and the radius of convergence verifies $$R \geq 1$$.
+the series converges for $$|z|<1$$ and the radius of convergence verifies $$R \geq 1$$.
 
 Let's take $$z \in (-1, 1)$$.
 
