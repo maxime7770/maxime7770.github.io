@@ -103,7 +103,7 @@ $$
 \left| g(z) \right| \leq \sum_{n=0}^{\infty} \left|u_n\right| \left|z\right|^n \leq \sum_{n=0}^{\infty} n\left|z\right|^n
 $$
 
-
+And $$\sum_{n=0}^{\infty} n\left|z\right|^n = \frac{z}{(1-z)^2}$$, which converges for $$\left|z\right|<1$$ by derivation of the geometric series.
 So the series converges for $$\left|z\right|<1$$ and the radius of convergence verifies $$R \geq 1$$.
 
 Let's take $$z \in (-1, 1)$$.
