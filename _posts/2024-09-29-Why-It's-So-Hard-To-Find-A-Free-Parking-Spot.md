@@ -1,7 +1,7 @@
 ---
 layout: post
 title: The Number of Wasted Parking Spaces Caused by Random Parking
-date: 2024-09-39 00:00:00 +0000
+date: 2024-09-29 00:00:00 +0000
 description: Estimating the number of wasted parking spaces caused by random parking.
 tags:
 categories: math
