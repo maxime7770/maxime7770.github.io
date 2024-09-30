@@ -48,16 +48,16 @@ $$
 Since $$\{X_n \mathbf{1}_{I_{n, k}} = j\} = \{X_n =j\} \cap I_{n, k}$$, we can write:
 
 $$
-\mathbb{P}(X_n \mathbf{1}_{I_{n, k}} =j) = \mathbb{P}(X_n =j| I_{n,k}) \mathbb{P}(I_{n, k}) = \frac{1}{n-1} \mathbb{P}(X_n = j | I_{n, k})
+\mathbb{P}(X_n \mathbf{1}_{I_{n, k}} =j) = \mathbb{P}(X_n =j\mid I_{n,k}) \mathbb{P}(I_{n, k}) = \frac{1}{n-1} \mathbb{P}(X_n = j \mid I_{n, k})
 $$
 
 Injecting this into the equation above, we get:
 
 $$
-\mathbb{E}[X_n \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{j=1}^{n-1} j \mathbb{P}(X_n = j | I_{n, k}) = \frac{1}{n-1} \mathbb{E}[X_n | I_{n, k}]
+\mathbb{E}[X_n \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{j=1}^{n-1} j \mathbb{P}(X_n = j \mid I_{n, k}) = \frac{1}{n-1} \mathbb{E}[X_n \mid I_{n, k}]
 $$
 
-Now, we need to compute the quantity $$\mathbb{E}[X_n | I_{n, k}]$$.
+Now, we need to compute the quantity $$\mathbb{E}[X_n \mid I_{n, k}]$$.
 
 This is the expected number of free spots at the end of the parking process, given that the first car parks at spot $$k$$. We can actually see the parking lane as two separate lanes, one to the left of spot $$k$$ and one to the right of spot $$k+1$$. The expected number of free spots on the left is $$u_{k-1}$$ (there are $$k-1$$ spots on the left after the first car parks), and the expected number of free spots on the right is $$u_{n-k-1}$$ (there are $$n-k-1$$ spots on the right after the first car parks).
 
@@ -73,13 +73,13 @@ This is the expected number of free spots at the end of the parking process, giv
 Therefore, we can write:
 
 $$
-\mathbb{E}[X_n | I_{n, k}] = u_{k-1} + u_{n-k-1}
+\mathbb{E}[X_n \mid I_{n, k}] = u_{k-1} + u_{n-k-1}
 $$
 
 So, we have:
 
 $$
-u_n = \frac{1}{n-1} \sum_{k=1}^{n-1} \mathbb{E}[X_n |\mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{k=1}^{n-1} (u_{k-1} + u_{n-k-1}) = \frac{2}{n-1} \sum_{k=1}^{n-1} u_{k-1} = \frac{2}{n-1} \sum_{k=1}^{n-2} u_k
+u_n = \frac{1}{n-1} \sum_{k=1}^{n-1} \mathbb{E}[X_n \mid \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{k=1}^{n-1} (u_{k-1} + u_{n-k-1}) = \frac{2}{n-1} \sum_{k=1}^{n-1} u_{k-1} = \frac{2}{n-1} \sum_{k=1}^{n-2} u_k
 $$
 
 Note that the last equality comes from the fact that $$u_{0} = \mathbb{E}[X_0] = 0$$, because there are no free spots when there are no parking spots.
@@ -96,14 +96,14 @@ $$
 g(z) = \sum_{n=0}^{\infty} u_n z^n
 $$
 
-The radius of convergence $$R$$ of this series is defined as the supremum of the set of real numbers $$r$$ such that the series converges for $$|z|<r$$.
+The radius of convergence $$R$$ of this series is defined as the supremum of the set of real numbers $$r$$ such that the series converges for $$\left| z \right|<r$$.
 We also have:
 
 $$
-|g(z)| \leq \sum_{n=0}^{\infty} |u_n| |z|^n \leq \sum_{n=0}^{\infty} n|z|^n 
+\left| g(z) \right| \leq \sum_{n=0}^{\infty} \left|u_n\right| \left|z\right|^n \leq \sum_{n=0}^{\infty} n\left|z\right|^n 
 $$
 
-So the series converges for $$|z|<1$$ and the radius of convergence verifies $$R \geq 1$$.
+So the series converges for $$\left|z\right|<1$$ and the radius of convergence verifies $$R\geq 1$$.
 
 Let's take $$z \in (-1, 1)$$.
 
