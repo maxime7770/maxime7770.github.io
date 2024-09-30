@@ -57,7 +57,7 @@ $$
 \mathbb{E}[X_n \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{j=1}^{n-1} j \mathbb{P}(X_n = j | I_{n, k}) = \frac{1}{n-1} \mathbb{E}[X_n | I_{n, k}]
 $$
 
-Now, we need to compute $$ \mathbb{E}[X_n | I_{n,k}]$$.
+Now, we need to compute $\mathbb{E}[X_n | I_{n,k}]$.
 
 This is the expected number of free spots at the end of the parking process, given that the first car parks at spot $$k$$. We can actually see the parking lane as two separate lanes, one to the left of spot $$k$$ and one to the right of spot $$k+1$$. The expected number of free spots on the left is $$u_{k-1}$$ (there are $$k-1$$ spots on the left after the first car parks), and the expected number of free spots on the right is $$u_{n-k-1}$$ (there are $$n-k-1$$ spots on the right after the first car parks).
 
@@ -96,8 +96,7 @@ $$
 g(z) = \sum_{n=0}^{\infty} u_n z^n
 $$
 
-The radius of convergence $$R$$ of this series is defined as the supremum of the set of real numbers $$r$$ such that the series converges for $$|z|<r$$.
-Since:
+The radius of convergence $$R$$ of this series is defined as the supremum of the set of real numbers $r$ such that the series converges for $|z|<r$. Since:
 
 $$
 |g(z)| \leq \sum_{n=0}^{\infty} |u_n| |z|^n \leq \sum_{n=0}^{\infty} n|z|^n 
