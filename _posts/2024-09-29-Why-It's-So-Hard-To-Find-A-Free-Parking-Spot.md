@@ -19,7 +19,7 @@ In this blog, we will explore how the number of free spots,  $$X_n$$ , behaves a
     </div>
 </div>
 <div class="caption">
-    Animation of the parking process
+    Animation of the parking process (3 spots are unusable)
 </div>
 
 Let's call $$I_{n, k}$$ the event: "the first car parks in spot $$k$$" (hence occupying spots $$k$$ and $$k+1$$).
@@ -59,7 +59,7 @@ $$
 
 Now, we need to compute $$ \mathbb{E}[X_n | I_{n, k}]$$.
 
-This is the expected number of free spots at the end of the parking process, given that the first car parks at spot $$k$$. We can actually see the parking lane as two separate lanes, one to the left of spot $$k$$ and one to the right of spot $$k+1$$. The expected number of free spots on the left is $$u_{k-1}$$ (there are $$k-1$$ spots on the left after the first car parks), and the number of free spots on the right is $$u_{n-k-1}$$ (there are $$n-k-1$$ spots on the right after the first car parks).
+This is the expected number of free spots at the end of the parking process, given that the first car parks at spot $$k$$. We can actually see the parking lane as two separate lanes, one to the left of spot $$k$$ and one to the right of spot $$k+1$$. The expected number of free spots on the left is $$u_{k-1}$$ (there are $$k-1$$ spots on the left after the first car parks), and the expected number of free spots on the right is $$u_{n-k-1}$$ (there are $$n-k-1$$ spots on the right after the first car parks).
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
