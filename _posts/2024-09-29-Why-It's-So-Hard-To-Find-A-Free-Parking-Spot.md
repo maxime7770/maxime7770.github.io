@@ -91,9 +91,8 @@ $$
 g(z) = \sum_{n=0}^{\infty} u_n z^n
 $$
 
-The radius of convergence $$R$$ of this series is defined as the supremum of the set of real numbers $$r$$ such that the series converges for $$|z| < r$$.
-
-Since
+The radius of convergence $$R$$ of this series is defined as the supremum of the set of real numbers $$r$$ such that the series converges for $$ |z| < r$$.
+Since:
 
 $$
 |g(z)| \leq \sum_{n=0}^{\infty} |u_n| |z|^n \leq \sum_{n=0}^{\infty} n|z|^n 
@@ -208,7 +207,7 @@ $$
 \boxed{u_n \sim \frac{n}{e^2}}
 $$
 
-Conclusion: the proportion of "wasted" spots in the parking lot tends to $$1/e^2 \approx 13.5\%$$ if people park randomly. That's why you should always be careful when parking your car!
+Conclusion: the proportion of "wasted" spots in the parking lot tends to $$1/e^2 \approx 13.5\%$$ if people park randomly. That's why you should always be careful when parking your car! :smile:
 
 
 
