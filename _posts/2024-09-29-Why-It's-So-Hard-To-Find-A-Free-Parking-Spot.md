@@ -102,7 +102,8 @@ We also have:
 $$
 \left| g(z) \right| \leq \sum_{n=0}^{\infty} \left|u_n\right| \left|z\right|^n \leq \sum_{n=0}^{\infty} n\left|z\right|^n 
 $$
-
+test $$\left|z\right|<1$$ test
+verifies $$R \geq 1$$.
 So the series converges for $$\left|z\right|<1$$ and the radius of convergence verifies $$R \geq 1$$.
 
 Let's take $$z \in (-1, 1)$$.
