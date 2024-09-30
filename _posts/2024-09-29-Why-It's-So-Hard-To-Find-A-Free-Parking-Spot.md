@@ -25,8 +25,13 @@ In this blog, we will explore how the number of free spots,  $$X_n$$ , behaves a
 Let's call $$I_{n, k}$$ the event: "the first car parks in spot $$k$$" (hence occupying spots $$k$$ and $$k+1$$).
 
 Since the first car parks at exactly one spot, we can write:
-$$1 = \sum_{k=1}^{n-1} \mathbf{1}_{I_{n, k}} $$
- and 
+
+$$
+1 = \sum_{k=1}^{n-1} \mathbf{1}_{I_{n, k}} 
+$$
+
+and
+
 $$
 X_n =  \sum_{k=1}^{n-1} X_n \mathbf{1}_{I_{n, k}}
 $$
@@ -52,7 +57,7 @@ $$
 \mathbb{E}[X_n \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{j=1}^{n-1} j \mathbb{P}(X_n = j | I_{n, k}) = \frac{1}{n-1} \mathbb{E}[X_n | I_{n, k}]
 $$
 
-Now, we need to compute $$\mathbb{E}[X_n | I_{n, k}]$$.
+Now, we need to compute $$ \mathbb{E}[X_n | I_{n, k}]$$.
 
 This is the expected number of free spots at the end of the parking process, given that the first car parks at spot $$k$$. We can actually see the parking lane as two separate lanes, one to the left of spot $$k$$ and one to the right of spot $$k+1$$. The expected number of free spots on the left is $$u_{k-1}$$ (there are $$k-1$$ spots on the left after the first car parks), and the number of free spots on the right is $$u_{n-k-1}$$ (there are $$n-k-1$$ spots on the right after the first car parks).
 
@@ -98,9 +103,9 @@ $$
 |g(z)| \leq \sum_{n=0}^{\infty} |u_n| |z|^n \leq \sum_{n=0}^{\infty} n|z|^n 
 $$
 
-the series converges for $$|z| < 1$$, and the radius of convergence verifies $$R \geq 1$$.
+the series converges for $$|z| < 1$$ and the radius of convergence verifies $$R \geq 1$$.
 
-Let's consider $$z \in (-1, 1)$$.
+Let's take $$z \in (-1, 1)$$.
 
 We want to leverage the recursive formula of $$u_n$$ to express $$g(z)$$. Since one term $$u_k$$ can be expressed as a weighted sum of the previous terms, we are motivated to use Cauchy's product to make the sum appear in the formula. Here is one way to do it:
 
@@ -126,7 +131,7 @@ $$
 \end{align*}
 $$
 
-This gives us a differential equation for $$g(z)$$, for $$z \in (-1, 1)$$:
+This gives us a differential equation for $$g(z)$$, for all $$z \in (-1, 1)$$:
 
 $$
 \boxed{zg'(z) = g(z) + \frac{2z^2}{1-z}g(z)}
@@ -159,7 +164,7 @@ $$
 g(z) = \alpha \exp(-2z) \frac{z}{(1-z)^2} + \beta
 $$
 
-We verify that this is also solution of the equation for all $$z \in (-1, 1)$$ by checking that the derivative of the function satisfies the differential equation. Since $$\beta = g(0) = u_0 = 0$$ and calculating $$g'(z)$$ gives $$0 = u_1 = g'(0) = \alpha \left[ \exp(-2 \times 0) \frac{1+0}{(1-0)^3}-2\exp(-2 \times 0) \frac{0}{(1-0)^2} \right] = \alpha$$.
+We verify that this is also solution of the equation for all $$z \in (-1, 1)$$ by checking that the derivative of the function satisfies the differential equation. Also, $$\beta = g(0) = u_0 = 0$$ and calculating $$g'(z)$$ gives $$0 = u_1 = g'(0) = \alpha \left[ \exp(-2 \times 0) \frac{1+0}{(1-0)^3}-2\exp(-2 \times 0) \frac{0}{(1-0)^2} \right] = \alpha$$.
 
 Therefore,
 
@@ -207,8 +212,8 @@ $$
 \boxed{u_n \sim \frac{n}{e^2}}
 $$
 
-Conclusion: the proportion of "wasted" spots in the parking lot tends to $$1/e^2 \approx 13.5\%$$ if people park randomly. That's why you should always be careful when parking your car! :smile:
+Conclusion: the proportion of "wasted" spots in the parking lot tends to $$1/e^2 \approx 13.5\%$$ if people park randomly. That's why you should always be careful when parking your car! :wink:
 
-
+Feel free to leave a comment below if you have any questions or suggestions!
 
 
