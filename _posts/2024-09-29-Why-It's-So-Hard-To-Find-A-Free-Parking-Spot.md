@@ -11,7 +11,7 @@ giscus_comments: true
 
 Imagine a long parking lot with $$n$$ parking spots arranged in a row, where each car occupies two adjacent spots. The cars arrive and park at random, choosing a pair of adjacent spots without any coordination. As more cars park, some spaces inevitably become isolated, making it impossible to park any more cars. This random process leaves a portion of the parking spots unusable, even though they are technically unoccupied. 
 
-In this blog, we will explore how the number of free spots,  $$X_n$$ , behaves as the number of parking spots $n$ grows, and estimate the inefficiency compared to an optimal parking strategy.
+In this blog, we will explore how the number of free spots,  $$X_n$$ , behaves as the number of parking spots $$n$$ grows, and estimate the inefficiency compared to an optimal parking strategy.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
@@ -104,7 +104,7 @@ $$
 $$
 
 
-And for $$\left|z\right|<1$$, we have:
+And for $$\left|z\right|<1$$, we know that:
 
 $$\sum_{n=0}^{\infty} n\left|z\right|^n = \frac{z}{(1-z)^2}$$
 
