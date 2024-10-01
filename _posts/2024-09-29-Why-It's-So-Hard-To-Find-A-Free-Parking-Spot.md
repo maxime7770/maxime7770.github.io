@@ -104,7 +104,7 @@ $$
 $$
 
 
-And for $$|z|<1$$, we know that:
+And, for $$ | z | <1$$, we know that:
 
 $$\sum_{n=0}^{\infty} n\left|z\right|^n = \frac{z}{(1-z)^2}$$
 
