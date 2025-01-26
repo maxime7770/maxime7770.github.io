@@ -2,7 +2,7 @@
 layout: post
 title: A Short and Elegant Proof
 date: 2025-01-25 00:00:00 +0000
-description: A very smart set theory proof...
+description:
 tags:
 categories: math
 giscus_comments: true
