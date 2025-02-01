@@ -15,13 +15,13 @@ profile:
 social: true  # includes social icons at the bottom of the page
 ---
 
-Hello! :wave:  I'm Maxime, a Masters in Business Analytics (MBAn) candidate at MIT.
+Hello! :wave: I’m Maxime, a Machine Learning Engineer at PayPal. My work focuses on building and deploying machine learning models, particularly in recommendation systems and personalization.
 
-My academic focus is on machine learning and deep learning, where I am involved in collaborative projects that address complex real-world challenges. Additionally, I conduct research at the MIT Operations Research Center in collaboration with IBM, at the intersection of optimization and machine learning under the supervision of Professor Georgia Perakis.
+I studied Data Science at MIT, where I worked on various projects at the intersection of optimization and machine learning. Previously, I collaborated with the MIT Operations Research Center and IBM, contributing to research at the intersection of Machine Learning and Optimization.
 
-I have a deep passion for AI, particularly in natural language processing (NLP), and have engaged in numerous hackathons and personal projects. You can find more details on my [GitHub](https://github.com/maxime7770).
+I have a strong passion for AI, especially in natural language processing, and I enjoy participating in hackathons and personal projects. You can find more details on my [GitHub](https://github.com/maxime7770).
 
-You can also check out my blog where I share insights on Machine Learning, Deep Learning, and Data Science. I'm always looking for new opportunities to collaborate on exciting projects!
+I also write about Machine Learning, Deep Learning, and Data Science on my blog. If you’re interested in discussing ideas or collaborating, feel free to reach out!
 
 Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with me on [Linkedin](https://www.linkedin.com/in/maxime-wolf/).
 
@@ -37,21 +37,21 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 <!-- ![Alt text for the GIF](assets/img/giphy.gif) -->
 <!-- <img src="assets/img/giphy.gif" width="100" alt="Example GIF"> -->
 
-<table>
+<!-- <table>
   <tr>
     <td><img src="assets/img/giphy.gif" alt="First GIF" style="width: 100px;"></td>
     <td style="font-size: 30px; font-weight: bold;">Recent Achievements</td>
     <td><img src="assets/img/giphy.gif" alt="Second GIF" style="width: 100px;"></td>
   </tr>
-</table>
+</table> -->
 
-Here are some of my recent achievements that I'm particularly proud of:
+## Recent Achievements
 
-- [MIT Capstone Project x Comcast](https://www.maximewolf.com/projects/MIT_Capstone_Project/): Selected as one of the **Top 10** ⭐ projects in the MIT Capstone Showcase
-- [Sherlock Picasso](https://github.com/maxime7770/Sherlock-Picasso): Won **2nd place** ⭐ and a **prize of $3000** at the Google x MIT Sloan Product Hackathon
-- [MIT Analytics Lab](https://maxime7770.github.io/projects/AI_Powered_Email_Assistant_for_CMA-CGM/): Won **3rd place** ⭐ at the MIT Initiative on the Digital Economy’s Analytics Lab Event
-- [AI Earth Hackathon](https://github.com/maxime7770/AI-Earth-Hackathon): Ranked **Top 15%** ⭐ in the AI Earth Hackathon organized by the Digital Data Design (D^3) Institute at Harvard University
-- MIT Marketing Analytics Class Competition: Ranked **1st** ⭐ out of 40 teams in a Kaggle competition on insurance purchase prediction 
+- [MIT Capstone Project x Comcast](https://www.maximewolf.com/projects/MIT_Capstone_Project/): Selected as one of the ***Top 10** projects in the MIT Capstone Showcase
+- [Sherlock Picasso](https://github.com/maxime7770/Sherlock-Picasso): **2nd place** at the Google x MIT Sloan Product Hackathon ($3,000 prize)
+- [MIT Analytics Lab](https://maxime7770.github.io/projects/AI_Powered_Email_Assistant_for_CMA-CGM/): **3rd place** at the MIT Initiative on the Digital Economy’s Analytics Lab Event
+
+- [AI Earth Hackathon](https://github.com/maxime7770/AI-Earth-Hackathon): Ranked **Top 15%** in the AI Earth Hackathon by the Digital Data Design (D^3) Institute at Harvard
 
 <br />
 <br />
