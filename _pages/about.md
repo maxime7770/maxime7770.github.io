@@ -45,9 +45,13 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
   </tr>
 </table> -->
 
+## Read my latest Medium blog post:
+
+<iframe src="https://medium.com/towards-data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74" width="100%" height="500px" frameborder="0" allowfullscreen></iframe>
+
 ## Recent Achievements
 
-- [MIT Capstone Project x Comcast](https://www.maximewolf.com/projects/MIT_Capstone_Project/): Selected as one of the ***Top 10** projects in the MIT Capstone Showcase
+- [MIT Capstone Project x Comcast](https://www.maximewolf.com/projects/MIT_Capstone_Project/): Selected as one of the **Top 10** projects in the MIT Capstone Showcase
 - [Sherlock Picasso](https://github.com/maxime7770/Sherlock-Picasso): **2nd place** at the Google x MIT Sloan Product Hackathon ($3,000 prize)
 - [MIT Analytics Lab](https://maxime7770.github.io/projects/AI_Powered_Email_Assistant_for_CMA-CGM/): **3rd place** at the MIT Initiative on the Digital Economy’s Analytics Lab Event
 
