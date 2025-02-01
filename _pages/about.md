@@ -45,9 +45,6 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
   </tr>
 </table> -->
 
-## Read my latest Medium blog post:
-
-<iframe src="https://medium.com/towards-data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74" width="100%" height="500px" frameborder="0" allowfullscreen></iframe>
 
 ## Recent Achievements
 
