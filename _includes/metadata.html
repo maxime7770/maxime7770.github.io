@@ -175,6 +175,10 @@
         {%- capture link -%}https://discord.com/users/{{ site.discord_id }}{%- endcapture -%}
         {%- assign sameaslinks = sameaslinks | push: link -%}
     {%- endif -%}
+    {%- if site.leetcode_id -%}
+        {%- capture link -%}https://leetcode.com/u/{{ site.leetcode_id }}{%- endcapture -%}
+        {%- assign sameaslinks = sameaslinks | push: link -%}
+    {%- endif -%}
     {%- if sameaslinks != blank -%}
         {%- assign sameaslinks = sameaslinks | split: "" -%}
     {%- endif -%}
