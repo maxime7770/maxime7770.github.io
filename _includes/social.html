@@ -91,3 +91,6 @@
             {%- if site.rss_icon -%}
             <a href="{{ site.baseurl }}/feed.xml" title="RSS Feed"><i class="fas fa-rss-square"></i></a>
             {% endif %}
+            {%- if site.leetcode_id -%}
+            <a href="https://leetcode.com/u/{{ site.leetcode_id }}/" title="LeetCode"><i class="fas fa-code"></i></a>
+            {% endif %}
