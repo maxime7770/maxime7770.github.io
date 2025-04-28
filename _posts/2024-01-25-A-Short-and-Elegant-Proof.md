@@ -6,6 +6,7 @@ description:
 tags:
 categories: math
 giscus_comments: true
+font: "JetBrains Mono, monospace"
 ---
 
 

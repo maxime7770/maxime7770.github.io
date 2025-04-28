@@ -39,7 +39,7 @@ layout: default
     </p>
   </header>
 
-  <article class="post-content">
+  <article class="post-content" {% if page.font %}style="font-family: {{ page.font }};"{% endif %}>
     {{ content }}
   </article>
 
