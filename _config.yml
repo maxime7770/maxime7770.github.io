@@ -148,6 +148,10 @@ disqus_shortname: al-folio # put your disqus shortname
 external_sources:
   - name: medium.com
     rss_url: https://medium.com/@maxwolf34/feed
+  - name: "Towards Data Science"
+    articles:
+      - title: "Model Compression: Make Your Machine Learning Models Lighter and Faster"
+        url: "https://towardsdatascience.com/model-compression-make-your-machine-learning-models-lighter-and-faster/"
 
 # -----------------------------------------------------------------------------
 # Collections
