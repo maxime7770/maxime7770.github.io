@@ -152,7 +152,7 @@ external_sources:
     posts:
       - title: "Model Compression: Make Your Machine Learning Models Lighter and Faster"
         url: "https://towardsdatascience.com/model-compression-make-your-machine-learning-models-lighter-and-faster/"
-        pusblished_date: "2025-05-09"
+        published_date: "2025-05-09"
 
 # -----------------------------------------------------------------------------
 # Collections
