@@ -23,7 +23,7 @@ I have a strong passion for AI, especially in natural language processing, and I
 
 I also write about Machine Learning, Deep Learning, and Data Science on my blog. If you’re interested in discussing ideas or collaborating, feel free to reach out!
 
-Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with me on [Linkedin](https://www.linkedin.com/in/maxime-wolf/).
+Feel free to reach out via email at [maximew@mit.edu](mailto:maximew@mit.edu) or connect with me on [Linkedin](https://www.linkedin.com/in/maxime-wolf/).
 
 
 
@@ -46,7 +46,7 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
   </tr>
 </table> -->
 
-
+<!-- 
 ## Recent Achievements
 
 - [MIT Capstone Project x Comcast](https://www.maximewolf.com/projects/MIT_Capstone_Project/): Selected as one of the **Top 10** projects in the MIT Capstone Showcase
@@ -56,4 +56,4 @@ Feel free to reach out via email at [maximew@mit.edu](mailto:) or connect with m
 - [AI Earth Hackathon](https://github.com/maxime7770/AI-Earth-Hackathon): Ranked **Top 15%** in the AI Earth Hackathon by the Digital Data Design (D^3) Institute at Harvard
 
 <br />
-<br />
+<br /> -->

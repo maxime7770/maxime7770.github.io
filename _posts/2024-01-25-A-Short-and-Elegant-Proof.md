@@ -2,8 +2,8 @@
 layout: post
 title: A Short and Elegant Proof
 date: 2025-01-25 00:00:00 +0000
-description:
-tags:
+description: A concise proof demonstrating that there does not exist a set that contains all sets!
+tags: set-theory, proof, mathematics
 categories: math
 giscus_comments: true
 font: "Merriweather, serif"
