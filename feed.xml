@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://www.maximewolf.com//feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.maximewolf.com//" rel="alternate" type="text/html" hreflang="en" /><updated>2025-08-14T01:33:16+00:00</updated><id>https://www.maximewolf.com//feed.xml</id><title type="html">Maxime Wolf</title><subtitle>Maxime Wolf&apos;s personal website
+</subtitle><entry><title type="html">Model Compression: Make Your Machine Learning Models Lighter and Faster | Towards Data Science</title><link href="https://www.maximewolf.com//blog/2025/model-compression-make-your-machine-learning-models-lighter-and-faster-towards-data-science/" rel="alternate" type="text/html" title="Model Compression: Make Your Machine Learning Models Lighter and Faster | Towards Data Science" /><published>2025-05-09T00:00:00+00:00</published><updated>2025-05-09T00:00:00+00:00</updated><id>https://www.maximewolf.com//blog/2025/model-compression-make-your-machine-learning-models-lighter-and-faster--towards-data-science</id><content type="html" xml:base="https://www.maximewolf.com//blog/2025/model-compression-make-your-machine-learning-models-lighter-and-faster-towards-data-science/"><![CDATA[<p>Publish AI, ML &amp; data-science insights to a global community of data professionals.
+			A deep dive into pruning, quantization, distillation, and other techniques to make your neural networks more efficient and easier to deploy.		Whether you’re preparing for interviews or building Machine Learning systems at your job, model compression has become a must-have skill. In the era of LLMs, where models are getting larger and larger, the challenges around compressing these models to make them more efficient, smaller, and usable on lightweight machines have never been more relevant.In this article, I will go through four fundamental compression techniques that every ML practitioner should understand and master. I explore pruning, quantization, low-rank factorization, and knowledge distillation, each offering unique advantages. I will also add some minimal PyTorch code samples for each of these methods.I hope you enjoy the article!Pruning is probably the most intuitive compression technique. The idea is very simple: remove some of the weights of the network, either randomly or remove the “less important” ones. Of course, when we talk about “removing” weights in the context of neural networks, it means setting the weights to zero.Let’s start with a simple heuristic: removing weights smaller than a threshold.[ w’<em>{ij} = \begin{cases} w</em>{ij} &amp; \text{if } |w_{ij}| \ge \theta_0 \0 &amp; \text{if } |w_{ij}| &lt; \theta_0\end{cases} ]Of course, this is not ideal because we would need to find a way to find the right threshold for our problem! A more practical approach is to remove a specified proportion of weights with the smallest magnitudes (norm) within one layer. There are 2 common ways of implementing pruning in one layer:We can also use global pruning with either of the two above methods. This will remove the chosen proportion of weights across multiple layers, and potentially have different removal rates depending on the number of parameters in each layer.PyTorch makes this pretty straightforward (by the way, you can find all code snippets in my GitHub repo).Note: if you have taken statistics classes, you probably learned regularization-induced methods that also implicitly prune some weights during training, by using L0 or L1 norm regularization. Pruning differs from that because it is applied as a post-model compression techniqueI would like to conclude that section with a quick mention of the Lottery Ticket Hypothesis, which is both an application of pruning and an interesting explanation of how removing weights can often improve a model. I recommend reading the associated paper ([7]) for more details.Authors use the following procedure:After doing this 30 times, you end up with only 0.930 ~ 4% of the original parameters. And surprisingly, this network can do as well as the original one.This suggests that there is important parameter redundancy. In other words, there exists a sub-network (“a lottery ticket”) that actually does most of the work! Pruning is one way to unveil this sub-network.While pruning focuses on removing parameters entirely, quantization takes a different approach: reducing the precision of each parameter.Remember that every number in a computer is stored as a sequence of bits. A float32 value uses 32 bits (see example picture below), whereas an 8-bit integer (int8) uses just 8 bits.Most deep learning models are trained using 32-bit floating-point numbers (FP32). Quantization converts these high-precision values to lower-precision formats like 16-bit floating-point (FP16), 8-bit integers (INT8), or even 4-bit representations.The savings here are obvious: INT8 requires 75% less memory than FP32. But how do we actually perform this conversion without destroying our model’s performance?To convert from floating-point to integer representation, we need to map the continuous range of values to a discrete set of integers. For INT8 quantization, we’re mapping to 256 possible values (from -128 to 127).Suppose our weights are normalized between -1.0 and 1.0 (common in deep learning):[ \text{scale} = \frac{\text{float_max} – \text{float_min}}{\text{int8<em>max} – \text{int8_min}} = \frac{1.0 – (-1.0)}{127 – (-128)} = \frac{2.0}{255} ] Then, the quantized value is given by[\text{quantized_value} = \text{round}(\frac{\text{original_value}}{\text{scale}} ] + \text{zero_point})Here, zero_point=0 because we want 0 to be mapped to 0. We can then round this value to the nearest integer to get integers between -127 and 128.And, you guessed it: to get integers back to float, we can use the inverse operation: [\text{float_value} = \text{integer_value} \times \text{scale} – \text{zero_point} ]Note: in practice, the scaling factor is determined based on the range values we quantize.Quantization can be applied at different stages and with different strategies. Here are a few techniques worth knowing about: (below, the word “activation” refers to the output values of each layer)Quantization is very flexible! You can apply different precision levels to different parts of the model. For instance, you might quantize most linear layers to 8-bit for maximum speed and memory savings, while leaving critical components (e.g. attention heads, or batch-norm layers) at 16-bit or full-precision.Now let’s talk about low-rank factorization — a method that has been popularized with the rise of LLMs.The key observation: many weight matrices in neural networks have effective ranks much lower than their dimensions suggest. In plain English, that means there is a lot of redundancy in the parameters.Note: if you have ever used PCA for dimensionality reduction, you have already encountered a form of low-rank approximation. PCA decomposes large matrices into products of smaller, lower-rank factors that retain as much information as possible.Take a weight matrix W. Every real matrix can be represented using a Singular Value Decomposition (SVD):[ W = U\Sigma V^T ]where Σ is a diagonal matrix with singular values in non-increasing order. The number of positive coefficients actually corresponds to the rank of the matrix W.To approximate W with a matrix of rank k &lt; r, we can select the k greatest elements of sigma, and the corresponding first k columns and first k rows of U and V respectively:[ \begin{aligned} W_k &amp;= U_k\,\Sigma_k\,V_k^T \[6pt] &amp;= \underbrace{U_k\,\Sigma_k^{1/2}}</em>{A\in\mathbb{R}^{m\times k}} \underbrace{\Sigma_k^{1/2}\,V_k^T}_{B\in\mathbb{R}^{k\times n}}. \end{aligned} ]See how the new matrix can be decomposed as the product of A and B, with the total number of parameters now being m * k + k * n = k<em>(m+n) instead of m</em>n! This is a huge improvement, especially when k is much smaller than m and n.In practice, it’s equivalent to replacing a linear layer x → Wx with 2 consecutive ones: x → A(Bx).We can either apply low-rank factorization before training (parameterizing each linear layer as two smaller matrices – not really a compression method, but a design choice) or after training (applying a truncated SVD on weight matrices). The second approach is by far the most common one and is implemented below.I think it’s crucial to mention LoRA: you have probably heard of LoRA (Low-Rank Adaptation) if you have been following LLM fine-tuning developments. Though not strictly a compression technique, LoRA has become extremely popular for efficiently adapting large language models and making fine-tuning very efficient.The idea is simple: during fine-tuning, rather than modifying the original model weights W, LoRA freezes them and learn trainable low-rank updates:\(W’ = W + \Delta W = W + AB\)where A and B are low-rank matrices. This allows for task-specific adaptation with just a fraction of the parameters. Even better: QLoRA takes this further by combining quantization with low-rank adaptation!Again, this is a very flexible technique and can be applied at various stages. Usually, LoRA is applied only on specific layers (for example, Attention layers’ weights).Knowledge distillation takes a fundamentally different approach from what we have seen so far. Instead of modifying an existing model’s parameters, it transfers the “knowledge” from a large, complex model (the “teacher”) to a smaller, more efficient model (the “student”). The goal is to train the student model to mimic the behavior and replicate the performance of the teacher, often an easier task than solving the original problem from scratch.Let’s explain some concepts in the case of a classification problem:In practice, it is pretty straightforward to train the student model. We combine the usual loss (standard cross-entropy loss based on hard labels) with the “distillation” loss (based on the teacher’s soft targets):\(L_{\text{total}} = \alpha L_{\text{hard}} + (1 – \alpha) L_{\text{distill}}\)The distillation loss is nothing but the KL divergence between the teacher and student distribution (you can see it as a measure of the distance between the 2 distributions).\(L_{\text{distill}} = D{KL}(q_{\text{teacher}} | | q_{\text{student}}) = \sum_i q_{\text{teacher}, i} \log \left( \frac{q_{\text{teacher}, i}}{q_{\text{student}, i}} \right)\)As for the other methods, it is possible and encouraged to adapt this framework depending on the use case: for example, one can also compare logits and activations from intermediate layers in the network between the student and teacher model, instead of only comparing the final outputs.Similar to the previous techniques, there are two options:And below, an easy way to apply offline distillation (the last code block of this article 🙂):Thanks for reading this article! In the era of LLMs, with billions or even trillions of parameters, model compression has become a fundamental concept, essential in almost every scenario to make models more efficient and easily deployable.But as we have seen, model compression isn’t just about reducing the model size – it’s about making thoughtful design decisions. Whether choosing between online and offline methods, compressing the entire network, or targeting specific layers or channels, each choice significantly impacts performance and usability. Most models now combine several of these techniques (check out this model, for instance). Beyond introducing you to the main methods, I hope this article also inspires you to experiment and develop your own creative solutions!Don’t forget to check out the GitHub repository, where you’ll find all the code snippets and a side-by-side comparison of the four compression methods discussed in this article.Check out my previous articles:Written ByShare This ArticleTowards Data Science is a community publication. Submit your insights to reach our global audience and earn through the TDS Author Payment Program.Step-by-step code guide to building a Convolutional Neural Network Here’s how to use Autoencoders to detect signals with anomalies in a few lines of… An illustrated guide on essential machine learning concepts Derivation and practical examples of this powerful concept Columns on TDS are carefully curated collections of posts on a particular idea or category… With demos, our new solution, and a video An illustrated guide to everything you need to know about Logistic Regression Your home for data science and Al. The world’s leading publication for data science, data analytics, data engineering, machine learning, and artificial intelligence professionals.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[A deep dive into pruning, quantization, distillation, and other techniques to make your neural networks more efficient and easier to deploy.]]></summary></entry><entry><title type="html">LLaDA Explained: How Diffusion Could Revolutionize Language Models</title><link href="https://www.maximewolf.com//blog/2025/llada-explained-how-diffusion-could-revolutionize-language-models/" rel="alternate" type="text/html" title="LLaDA Explained: How Diffusion Could Revolutionize Language Models" /><published>2025-02-25T17:54:30+00:00</published><updated>2025-02-25T17:54:30+00:00</updated><id>https://www.maximewolf.com//blog/2025/llada-explained-how-diffusion-could-revolutionize-language-models</id><content type="html" xml:base="https://www.maximewolf.com//blog/2025/llada-explained-how-diffusion-could-revolutionize-language-models/"><![CDATA[<h3><strong>LLaDA: The Diffusion Model That Could Redefine Language Generation</strong></h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*feSfRRh6hoH1MXvxkYjKMA.png" /><figcaption>Image generated by Dall-E</figcaption></figure>
+<h3>Introduction</h3>
+<p>What if we could make language models think<strong> more like humans</strong>? Instead of writing one word at a time, what if they could sketch out their thoughts first, and gradually refine them?</p>
+<p>This is exactly what Large Language Diffusion Models (LLaDA) introduces: a different approach to current text generation used in Large Language Models (LLMs). Unlike traditional autoregressive models (ARMs), which predict text sequentially, left to right, <strong>LLaDA leverages a diffusion-like process to generate text.</strong> Instead of generating tokens sequentially, it <strong>progressively refines masked text until it forms a coherent response</strong>.</p>
+<p>In this article, we will dive into how LLaDA works, why it matters, and how it could shape the next generation of LLMs.</p>
+<p>I hope you enjoy the article!</p>
+<h3>The current state of LLMs</h3>
+<p>To appreciate the innovation that LLaDA represents, we first need to understand how current large language models (LLMs) operate. Modern LLMs follow a two-step training process that has become an industry standard:</p>
+<ol><li><strong>Pre-training</strong>: The model learns general language patterns and knowledge by predicting the next token in massive text datasets through self-supervised learning.</li><li><strong>Supervised Fine-Tuning (SFT)</strong>: The model is refined on carefully curated data to improve its ability to follow instructions and generate useful outputs.</li></ol>
+<p><em>Note that current LLMs often use RLHF as well to further refine the weights of the model, but this is not used by LLaDA so we will skip this step here.</em></p>
+<p>These models, primarily based on the Transformer architecture, generate text <strong>one token at a time</strong> using next-token prediction.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*F6HkX1GkSF5WYOwZ4Afo_w.png" /><figcaption>Simplified Transformer architecture for text generation (Image by the author)</figcaption></figure>
+<p>Here is a simplified illustration of how data passes through such a model. <strong>Each token is embedded into a vector and is transformed through successive transformer layers</strong>. In current LLMs (LLaMA, ChatGPT, DeepSeek, etc), a classification head is used only on the last token embedding to predict the next token in the sequence.</p>
+<p>This works thanks to the concept of <strong>masked self-attention</strong>: each token attends to all the tokens that come before it. We will see later how LLaDA can get rid of the mask in its attention layers.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/899/1*zVrq7u6Wo-i1pclptiU_xQ.png" /><figcaption>Attention process: input embeddings are multiplied byQuery, Key, and Value matrices to generate new embeddings (Image by the author, inspired by [3])</figcaption></figure>
+<p><em>If you want to learn more about Transformers, check out my Medium article below:</em></p>
+<p><a href="https://medium.com/towards-data-science/transformers-how-do-they-transform-your-data-72d69e383e0d">Transformers: How Do They Transform Your Data?</a></p>
+<p>While this approach has led to impressive results, it also comes with significant limitations, some of which have motivated the development of LLaDA.</p>
+<h3>Current limitations of LLMs</h3>
+<p>Current LLMs face several critical challenges:</p>
+<h4>Computational Inefficiency</h4>
+<p>Imagine having to write a novel where <strong>you can only think about one word at a time,</strong> and for each word, you need to reread everything you’ve written so far. This is essentially how current LLMs operate — they predict one token at a time, requiring a complete processing of the previous sequence for each new token. Even with optimization techniques like KV caching, this process is <strong>quite computationally expensive and time-consuming</strong>.</p>
+<h4>Limited Bidirectional Reasoning</h4>
+<p>Traditional autoregressive models (ARMs) are like writers who could never look ahead or revise what they’ve written so far. <strong>They can only predict future tokens based on past ones, which limits their ability to reason about relationships between different parts of the text.</strong> As humans, we often have a general idea of what we want to say before writing it down, current LLMs lack this capability in some sense.</p>
+<h4>Amount of data</h4>
+<p>Existing models require <strong>enormous amounts of training data</strong> to achieve good performance, making them resource-intensive to develop and potentially limiting their applicability in specialized domains with limited data availability.</p>
+<h3>What is LLaDA</h3>
+<p>LLaDA introduces a fundamentally different approach to language generation by replacing traditional autoregression with a <strong>“diffusion-based”</strong> process (we will dive later into why this is called “diffusion”).</p>
+<p>Let’s understand how this works, step by step, starting with pre-training.</p>
+<h4>LLaDA pre-training</h4>
+<p>Remember that we don’t need any “labeled” data during the pre-training phase. The objective is to feed a very large amount of raw text data into the model. For each text sequence, we do the following:</p>
+<ol><li>We fix a maximum length (similar to ARMs). Typically, this could be 4096 tokens. 1% of the time, the lengths of sequences are randomly sampled between 1 and 4096 and padded so that the model is also exposed to shorter sequences.</li><li>We randomly choose a “masking rate”. For example, one could pick 40%.</li><li>We mask each token with a probability of 0.4. What does “masking” mean exactly? Well, we simply replace the token <strong>with a special token</strong>: <strong>&lt;MASK&gt;</strong>. As with any other token, this token is associated with a particular index and embedding vector that the model can process and interpret during training.</li><li>We then feed our entire sequence into our transformer-based model. This process transforms all the input embedding vectors into new embeddings. We <strong>apply the classification head to each of the masked tokens</strong> to get a prediction for each. Mathematically, our loss function averages cross-entropy losses over all the masked tokens in the sequence, as below:</li></ol>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*_DFxLzcQ9fskIlIymfuLBA.png" /><figcaption>Loss function used for LLaDA (Image by the author)</figcaption></figure>
+<p>5. And… we repeat this procedure for billions or trillions of text sequences.</p>
+<blockquote><strong><em>Note, that unlike ARMs, LLaDA can fully utilize bidirectional dependencies in the text: it doesn’t require masking in attention layers anymore. However, this can come at an increased computational cost.</em></strong></blockquote>
+<p>Hopefully, you can see how the training phase itself (the flow of the data into the model) is very similar to any other LLMs. <strong>We simply predict randomly masked tokens instead of predicting what comes next.</strong></p>
+<h4>LLaDA SFT</h4>
+<p>For <strong>auto-regressive models</strong>, SFT is very similar to pre-training, except that we have pairs of <em>(prompt, response) </em>and want to generate the response when giving the prompt as input.</p>
+<p>This is exactly the <strong>same concept for LLaDA</strong>! Mimicking the pre-training process: we simply pass the prompt and the response, mask random tokens <strong>from the response only</strong>, and feed the full sequence into the model, which <strong>will predict missing tokens from the response</strong>.</p>
+<h4>The innovation in inference</h4>
+<p>Innovation is where LLaDA gets more interesting, and truly utilizes the “diffusion” paradigm.</p>
+<p>Until now, we always randomly masked some text as input and asked the model to predict these tokens. But during inference, <strong>we only have access to the prompt </strong>and we need to generate the entire response. You might think (and it’s not wrong), that the model has seen examples where the masking rate was very high (potentially 1) during SFT, and it had to learn, somehow, how to <strong>generate a full response from a prompt</strong>.</p>
+<p>However, generating the full response at once during inference will likely produce very poor results because the model lacks information. Instead, we need a method to <strong>progressively refine predictions</strong>, and that’s where the key idea of <strong>‘remasking’ </strong>comes in.</p>
+<p>Here is how it works, at each step of the text generation process:</p>
+<ul><li>Feed the current input to the model (this is the prompt, followed by <strong>&lt;MASK&gt;</strong> tokens)</li><li>The model generates one embedding for each input token. We get predictions for the <strong>&lt;MASK&gt;</strong> tokens only. And here is the important step: <strong>we remask a portion of them</strong>. In particular: we only keep the “best” tokens i.e. the ones <strong>with the best predictions</strong>, with the highest confidence.</li><li>We can use this <strong>partially unmasked sequence</strong> as input in the next generation step and repeat until all tokens are unmasked.</li></ul>
+<p>You can see that, interestingly, <strong>we have much more control</strong> over the generation process compared to ARMs: we could choose to remask 0 tokens (only one generation step), or we could decide to keep only the best token every time (as many steps as tokens in the response). Obviously, <strong>there is a trade-off here between the quality of the predictions and inference time.</strong></p>
+<p>Let’s illustrate that with a simple example (in that case, I choose to keep the best 2 tokens at every step)</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*Jfxxelqbjz8u-QBLeXZYzA.png" /><figcaption>LLaDA generation process example (Image by the author)</figcaption></figure>
+<p>Note, in practice, the remasking step would work as follows. Instead of remasking a fixed number of tokens, <strong>we would remask a proportion of s/t tokens over time, from t=1 down to 0, where s is in [0, t].</strong> In particular, this means we remask fewer and fewer tokens as the number of generation steps increases.</p>
+<p><em>Example</em>: if we want N sampling steps (so N discrete steps from t=1 down to t=1/N with steps of 1/N), taking s = (t-1/N) is a good choice, and ensures that s=0 at the end of the process.</p>
+<p>The image below summarizes the 3 steps described above. “Mask predictor” simply denotes the LLM (LLaDA), predicting masked tokens.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*00SyWDItOWMv0bUdKTye9A.png" /><figcaption>Pre-training (a.), SFT (b.) and inference (c.) using LLaDA. (source: [1])</figcaption></figure>
+<h3>Can autoregression and diffusion be combined?</h3>
+<p>Another clever idea developed in LLaDA is <strong>to combine diffusion with traditional autoregressive generation to use the best of both worlds!</strong> This is called <strong>semi-autoregressive diffusion</strong>.</p>
+<ul><li>Divide the generation process into blocks (for instance, 32 tokens in each block).</li><li>The objective is to <strong>generate one block at a time</strong> (like we would generate one token at a time in ARMs).</li><li><strong>For each block, we apply the diffusion logic</strong> by progressively unmasking tokens to reveal the entire block. Then move on to predicting the next block.</li></ul>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*zaZOcBVb5G4sqY60J68ulg.png" /><figcaption>Semi-autoregressive process (source: [1])</figcaption></figure>
+<p>This is a hybrid approach: we probably lose some of the “backward” generation and parallelization capabilities of the model, but <strong>we better “guide” the model</strong> towards the final output.</p>
+<p>I think this is a very interesting idea because it depends a lot on a hyperparameter (the number of blocks), that can be tuned. I imagine different tasks might benefit more from the backward generation process, while others might benefit more from the more “guided” generation from left to right (more on that in the last paragraph).</p>
+<h3>Why “Diffusion”?</h3>
+<p>I think it’s important to briefly explain where this term actually comes from. It reflects a similarity with <strong>image diffusion models (like Dall-E)</strong>, which have been very popular for image generation tasks.</p>
+<p>In image diffusion, a model first adds noise to an image until it’s unrecognizable, then learns to reconstruct it step by step. LLaDA applies this idea to text <strong>by masking tokens instead of adding noise</strong>, and then progressively <strong>unmasking them</strong> to generate coherent language. In the context of image generation, the masking step is often called “noise scheduling”, and the reverse (remasking) is the “denoising” step.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/700/0*y1hRHhA3CaJkadBh" /><figcaption>How do Diffusion Models work? (source: [2])</figcaption></figure>
+<p>You can also see LLaDA as some type of <strong>discrete</strong> (non-continuous) diffusion model: we don’t add noise to tokens, but we “deactivate” some tokens by masking them, and the model learns how to unmask a portion of them.</p>
+<h3>Results</h3>
+<p>Let’s go through <em>a few </em>of the interesting results of LLaDA.</p>
+<p><em>You can find all the results in the paper. I chose to focus on what I find the most interesting here.</em></p>
+<ul><li><strong>Training efficiency</strong>: LLaDA shows similar performance to ARMs with the same number of parameters, but u<strong>ses much fewer tokens</strong> during training (and no RLHF)! For example, the 8B version uses around 2.3T tokens, compared to 15T for LLaMa3.</li><li><strong>Using different block and answer lengths for different tasks</strong>: for example, the block length is particularly large for the Math dataset, and the model demonstrates strong performance for this domain. This could suggest that mathematical reasoning may benefit more from the <strong>diffusion-based and backward process</strong>.</li></ul>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/591/1*npIPih_7TGBiT6bEGnYfzA.png" /><figcaption>Source: [1]</figcaption></figure>
+<ul><li>Interestingly, LLaDA does better on the “Reversal poem completion task”. This task requires the model to <strong>complete a poem in reverse order</strong>, starting from the last lines and working backward. As expected, ARMs struggle due to their strict left-to-right generation process.</li></ul>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/475/1*rO3FqBzTLRoXCElD0LxGfw.png" /><figcaption>Source: [1]</figcaption></figure>
+<blockquote>LLaDA is not just an experimental alternative to ARMs: it shows real advantages in efficiency, structured reasoning, and bidirectional text generation.</blockquote>
+<h3>Conclusion</h3>
+<p>I think LLaDA is a promising approach to language generation. Its ability to generate multiple tokens in parallel while maintaining global coherence could definitely lead to <strong>more efficient training</strong>, <strong>better reasoning</strong>, and <strong>improved context understanding</strong> with fewer computational resources.</p>
+<p>Beyond efficiency, I think LLaDA also brings a lot of <strong>flexibility</strong>. By adjusting parameters like the number of blocks generated, and the number of generation steps, it can <strong>better adapt to different tasks and constraints</strong>, making it a versatile tool for various language modeling needs, and allowing <strong>more human control</strong>. Diffusion models could also play an important role in pro-active AI and agentic systems by being able to reason more holistically.</p>
+<p>As research into diffusion-based language models advances, LLaDA could become a useful step toward <strong>more natural and efficient language models</strong>. While it’s still early, I believe this shift from sequential to parallel generation is an interesting direction for AI development.</p>
+<p>Thanks for reading!</p>
+<p>Check out my previous articles:</p>
+<ul><li><a href="https://medium.com/data-science-collective/training-large-language-models-from-trpo-to-grpo-f3607a126194">Training Large Language Models: From TRPO to GRPO</a></li><li><a href="https://medium.com/towards-data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74">The Math Behind “The Curse of Dimensionality”</a></li></ul>
+<ul><li>Feel free to connect on <a href="https://www.linkedin.com/in/maxime-wolf/">LinkedIn</a></li><li>Follow me on <a href="https://github.com/maxime7770">GitHub</a> for more content</li><li>Visit my website: <a href="http://maximewolf.com/">maximewolf.com</a></li></ul>
+<h4>References:</h4>
+<ul><li>[1] Liu, C., Wu, J., Xu, Y., Zhang, Y., Zhu, X., &amp; Song, D. (2024). <strong>Large Language Diffusion Models</strong>. <em>arXiv preprint arXiv:2502.09992</em>. <a href="https://arxiv.org/pdf/2502.09992">https://arxiv.org/pdf/2502.09992</a></li><li>[2] <a href="https://dl.acm.org/doi/10.1145/3626235">Yang, Ling, et al. “Diffusion models: A comprehensive survey of methods and applications.” ACM Computing Surveys 56.4 (2023): 1–39.</a></li><li>[3] Alammar, J. (2018, June 27). <strong>The Illustrated Transformer</strong>. <em>Jay Alammar’s Blog</em>. <a href="https://jalammar.github.io/illustrated-transformer/">https://jalammar.github.io/illustrated-transformer/</a></li></ul>
+<p><img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=950bcce4ec09" width="1" height="1" alt="" />&lt;hr&gt;&lt;p&gt;<a href="https://medium.com/data-science-collective/llada-explained-how-diffusion-could-revolutionize-language-models-950bcce4ec09">LLaDA Explained: How Diffusion Could Revolutionize Language Models</a> was originally published in <a href="https://medium.com/data-science-collective">Data Science Collective</a> on Medium, where people are continuing the conversation by highlighting and responding to this story.&lt;/p&gt;</p>]]></content><author><name></name></author></entry><entry><title type="html">Training Large Language Models: From TRPO to GRPO</title><link href="https://www.maximewolf.com//blog/2025/training-large-language-models-from-trpo-to-grpo/" rel="alternate" type="text/html" title="Training Large Language Models: From TRPO to GRPO" /><published>2025-02-06T03:59:03+00:00</published><updated>2025-02-06T03:59:03+00:00</updated><id>https://www.maximewolf.com//blog/2025/training-large-language-models-from-trpo-to-grpo</id><content type="html" xml:base="https://www.maximewolf.com//blog/2025/training-large-language-models-from-trpo-to-grpo/"><![CDATA[<h4>Dive into how DeepSeek, ChatGPT, and other LLMs leverage reinforcement learning to enhance their training</h4>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*nPPVFFCtxEjhZ-64vAQhgQ.png" /><figcaption>Image generated by the author using DALL-E</figcaption></figure>
+<p>DeepSeek has recently made <strong>quite a buzz </strong>in the AI community, thanks to its impressive performance at relatively low costs. I think this is a perfect opportunity to dive deeper into how Large Language Models (LLMs) are trained. In this article, we will focus on the Reinforcement Learning (RL) side of things: we will cover TRPO, PPO, and, more recently, GRPO (don&#39;t worry, I will explain all these terms soon!)</p>
+<p>I have aimed to keep this article relatively easy to read and accessible, by minimizing the math, so you won’t need a deep Reinforcement Learning background to follow along. However, I will assume that you have some familiarity with Machine Learning, Deep Learning, and a basic understanding of how LLMs work.</p>
+<p>I hope you enjoy the article, and feel free to leave a clap!</p>
+<h3>The 3 steps of LLM training</h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*gDF9kq-aLcUvG0XFBU2DGA.png" /><figcaption>The 3 steps of LLM training [1]</figcaption></figure>
+<p>Before diving into RL specifics, let’s briefly recap the three main stages of training a Large Language Model:</p>
+<ul><li><strong>Pre-training</strong>: the model is trained on a massive dataset to predict the next token in a sequence based on preceding tokens.</li><li><strong>Supervised Fine-Tuning (SFT)</strong>: the model is then <strong>fine-tuned</strong> on more targeted data and aligned with specific instructions.</li><li><strong>Reinforcement Learning </strong>(often called <em>RLHF</em> for Reinforcement Learning with Human Feedback): this is the focus of this article. The main goal is to further refine responses’ alignments with human preferences, by allowing the model to learn directly from feedback.</li></ul>
+<h3>Reinforcement Learning Basics</h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*n2QZe4jUFk_OccaY.png" /><figcaption>A robot trying to exit a maze! [2]</figcaption></figure>
+<p>Before diving deeper, let’s briefly revisit the core ideas behind Reinforcement Learning.</p>
+<p>RL is quite straightforward to understand at a high level: an<strong> agent</strong> interacts with an <strong>environment</strong>. The agent resides in a specific <strong>state</strong> within the environment and can take <strong>actions</strong> to transition to other states. Each action yields a <strong>reward</strong> from the environment: this is how the environment provides feedback that guides the agent’s future actions.</p>
+<p>Consider the following example: a <strong>robot</strong> (the agent) navigates (and tries to exit) a <strong>maze</strong> (the environment).</p>
+<ul><li>The <strong>state</strong> is the current situation of the environment (the robot’s position in the maze).</li><li>The robot can take different <strong>actions</strong>: for example, it can move forward, turn left, or turn right.</li><li>Successfully navigating towards the exit yields a <strong>positive reward</strong>, while hitting a wall or getting stuck in the maze results in <strong>negative rewards.</strong></li></ul>
+<p>Easy! Now, let’s now make an analogy to how RL is used in the context of LLMs.</p>
+<h3>RL in the context of LLMs</h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*8hJsPwyITye84NWqHAe2MA.png" /><figcaption>Simplified RLHF Process [3]</figcaption></figure>
+<p>When used during LLM training, RL is defined by the following components:</p>
+<ul><li>The LLM itself <strong>is the agent</strong></li><li><strong>Environment</strong>: everything external to the LLM, including user prompts, feedback systems, and other contextual information. This is basically the framework the LLM is interacting with during training.</li><li><strong>Actions: </strong>these are responses to a query from the model. More specifically: these are the <strong>tokens</strong> that the LLM decides to generate in response to a query.</li><li><strong>State: </strong>the current query being answered along with tokens the LLM has generated so far (i.e., the partial responses).</li><li><strong>Rewards:</strong> this is a bit more tricky here: unlike the maze example above, there is <strong>usually</strong> no binary reward. In the context of LLMs, rewards usually come from a separate <em>reward model</em>, which outputs a score for each (query, response) pair. This model is trained from human-annotated data (hence “RLHF”) where annotators rank different responses. The goal is for higher-quality responses to receive higher rewards.</li></ul>
+<blockquote>Note: in some cases, rewards can actually get simpler. For example, in DeepSeekMath, <strong>rule-based approaches</strong> can be used because math responses tend to be more deterministic (correct or wrong answer)</blockquote>
+<p><strong>Policy</strong> is the final concept we need for now. In RL terms, a policy is simply the strategy for deciding which action to take. In the case of an LLM, the policy outputs a probability distribution over possible tokens at each step: in short, this is what the model uses to sample the next token to generate. Concretely, the policy is determined by the model’s parameters (weights). During RL training, we adjust these parameters so the LLM becomes more likely to produce “better” tokens— that is, tokens that produce higher reward scores.</p>
+<p>We often write the policy as:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/179/0*oj50mh1PYdcv5CBf.png" /></figure>
+<p>where <em>a</em> is the action (a token to generate), <em>s</em> the state (the query and tokens generated so far), and <em>θ </em>(model’s parameters).</p>
+<p>This idea of finding the best policy is the whole point of RL! Since we don’t have labeled data (like we do in supervised learning) <strong>we use rewards to adjust our policy to take better actions.</strong> <em>(In LLM terms: we adjust the parameters of our LLM to generate better tokens.)</em></p>
+<h3>TRPO (Trust Region Policy Optimization)</h3>
+<h4>An analogy with supervised learning</h4>
+<p>Let’s take a quick step back to how supervised learning typically works. you have labeled data and use a loss function (like cross-entropy) to measure how close your model’s predictions are to the true labels.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/188/0*YaLNgOyGdTJdnmzK.png" /></figure>
+<p>We can then use algorithms like backpropagation and gradient descent to minimize our loss function and update the weights <em>θ</em> of our model.</p>
+<p>Recall that our policy also outputs probabilities! In that sense, it is analogous to the model’s predictions in supervised learning… We are tempted to write <em>something like</em>:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/248/0*mCxBSj_yWyLAHEEV.png" /></figure>
+<p>where <em>s</em> is the current state and <em>a</em> is a possible action.</p>
+<p><em>A(s, a) </em>is called the <strong>advantage function</strong> and measures how good is the chosen action in the current state, compared to a baseline. This is very much like the notion of <strong>labels </strong>in supervised learning but derived from <strong>rewards</strong> instead of explicit labeling. <em>To simplify</em>, we can write the advantage as:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/313/0*Bkfvw7w81TyeuKEs.png" /></figure>
+<p>In practice, the baseline is calculated using a <strong>value function</strong>. This is a common term in RL that I will explain later. What you need to know for now is that it measures the expected reward we would receive if we continue following the current policy from the state <em>s</em>.</p>
+<h4>What is TRPO?</h4>
+<p>TRPO (Trust Region Policy Optimization) builds on this idea of using the advantage function but adds a critical ingredient for <strong>stability</strong>: it <strong>constrains</strong> how far the new policy can deviate from the old policy at each update step (similar to what we do with batch gradient descent for example).</p>
+<ul><li>It introduces a KL divergence term (see it as a measure of similarity) between the current and the old policy:</li></ul>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/138/0*2pSGRrxLNHmL9Yns.png" /></figure>
+<ul><li>It also divides the policy by the old policy. This ratio, multiplied by the advantage function, gives us a sense of how beneficial each update is <strong>relative to the old policy</strong>.</li></ul>
+<p>Putting it all together, TRPO tries to <strong>maximize</strong> a surrogate objective (which involves the advantage and the policy ratio) subject to a <strong>KL divergence constraint</strong>.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/405/0*O6IZum3z9DVSJTIS.png" /></figure>
+<h3>PPO (Proximal Policy Optimization)</h3>
+<p>While TRPO was a significant advancement, it’s no longer used widely in practice, especially for training LLMs, due to its computationally intensive gradient calculations.</p>
+<blockquote>Instead, PPO is now the preferred approach in most LLMs architecture, including ChatGPT, Gemini, and more.</blockquote>
+<p>It is actually quite similar to TRPO, but instead of enforcing <strong>a hard constraint on the KL divergence</strong>, PPO introduces a “<strong>clipped</strong> surrogate objective” that implicitly restricts policy updates, and greatly simplifies the optimization process.</p>
+<p>Here is a breakdown of the PPO objective function we maximize to tweak our model’s parameters.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*oVi9NcQvD15nTp4G7rJueA.png" /><figcaption>Image by the Author</figcaption></figure>
+<h3>GRPO (Group Relative Policy Optimization)</h3>
+<h4>How is the value function usually obtained?</h4>
+<p>Let’s first talk more about the <strong>advantage</strong> and the <strong>value functions</strong> I introduced earlier.</p>
+<p>In typical setups (like PPO), a <strong>value model</strong> is trained alongside the policy. Its goal is to predict the value of each action we take (each token generated by the model), using the rewards we obtain (remember that the value should represent the expected cumulative reward).</p>
+<p>Here is how it works in practice. Take the query “What is 2+2?” as an example. Our model outputs “2+2 is 4” and receives a reward of 0.8 for that response. We then go backward and attribute <strong>discounted rewards</strong> to each prefix:</p>
+<ul><li>“2+2 is 4” gets a value of 0.8</li><li>“2+2 is” (1 token backward) gets a value of 0.8<em>γ</em></li><li>“2+2” (2 tokens backward) gets a value of 0.8<em>γ²</em></li><li>etc.</li></ul>
+<p>where <em>γ</em> is the discount factor (0.9 for example). We then use these prefixes and associated values to train the value model.</p>
+<blockquote>Important note: the value model and the reward model are two different things. The reward model is trained before the RL process and uses pairs of (query, response) and human ranking. The value model is trained concurrently to the policy, and aims at predicting the future expected reward at each step of the generation process.</blockquote>
+<h4>What’s new in GRPO</h4>
+<p>Even if in practice, the reward model is often derived from the policy (training only the “head”), we still end up maintaining many models and handling multiple training procedures (policy, reward, value model). <strong>GRPO</strong> streamlines this by introducing a more efficient method.</p>
+<p>Remember what I said earlier?</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/313/0*Bkfvw7w81TyeuKEs.png" /></figure>
+<p>In PPO, we decided to use our value function as the baseline. GRPO chooses something else: Here is what GRPO does: concretely, <strong>for each query</strong>, GRPO generates a group of responses (group of size G) and uses their rewards to calculate each response’s advantage as a <strong>z-score</strong>:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/93/0*3cqWAmG6B5tNjU8A.png" /></figure>
+<p>where <em>rᵢ</em> is the reward of the <em>i</em>-th response and <em>μ</em> and <em>σ</em> are the mean and standard deviation of rewards in that group.</p>
+<p>This naturally eliminates the need for a separate value model. This idea makes a lot of sense when you think about it! <strong>It aligns with the value function we introduced before</strong> and also measures, in a sense, an “expected” reward we can obtain. Also, this new method is well adapted to our problem because LLMs can easily generate multiple <strong>non-deterministic outputs</strong> by using a low <em>temperature </em>(controls the randomness of tokens generation).</p>
+<blockquote>This is the main idea behind GRPO: getting rid of the value model.</blockquote>
+<p>Finally, GRPO adds a <strong>KL divergence</strong> term (to be exact, GRPO uses a simple approximation of the KL divergence to improve the algorithm further) directly into its objective, comparing the current policy to a <strong>reference policy</strong> (often the post-SFT model).</p>
+<p>See the final formulation below:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*uw87yMbJbxD2RsV2WWQPrg.png" /><figcaption>Image by the Author</figcaption></figure>
+<p><strong>And… that’s mostly it for GRPO!</strong> I hope this gives you a clear overview of the process: it still relies on the same foundational ideas as TRPO and PPO but introduces additional improvements to make training more efficient, faster, and cheaper — key factors behind <strong>DeepSeek’s success</strong>.</p>
+<h3>Conclusion</h3>
+<p>Reinforcement Learning has become a cornerstone for training today’s Large Language Models, particularly through PPO, and more recently GRPO. Each method rests on the same RL fundamentals — states, actions, rewards, and policies — but adds its own twist to balance stability, efficiency, and human alignment:</p>
+<p>• <strong>TRPO</strong> introduced strict policy constraints via KL divergence</p>
+<p>• <strong>PPO</strong> eased those constraints with a clipped objective</p>
+<p>• <strong>GRPO</strong> took an extra step by removing the value model requirement and using group-based reward normalization. Of course, DeepSeek also benefits from other innovations, like high-quality data and other training strategies, but that is for another time!</p>
+<p>I hope this article gave you a clearer picture of how these methods connect and evolve. I believe that Reinforcement Learning will become <strong>the main focus in training LLMs</strong> to improve their performance, surpassing pre-training and SFT in driving future innovations.</p>
+<p>If you’re interested in diving deeper, feel free to check out the references below or explore my previous posts.</p>
+<p>Thanks for reading, and feel free to leave a clap and a comment!</p>
+<p>Want to learn more about Transformers or dive into the math behind the Curse of Dimensionality? Check out my previous articles:</p>
+<ul><li><a href="https://medium.com/towards-data-science/transformers-how-do-they-transform-your-data-72d69e383e0d">Transformers: How Do They Transform Your Data?</a></li><li><a href="https://medium.com/towards-data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74">The Math Behind “The Curse of Dimensionality”</a></li></ul>
+<ul><li>Feel free to connect on <a href="https://www.linkedin.com/in/maxime-wolf/">LinkedIn</a></li><li>Follow me on <a href="https://github.com/maxime7770">GitHub</a> for more content</li><li>Visit my website: <a href="http://maximewolf.com/">maximewolf.com</a></li></ul>
+<p>References:</p>
+<ul><li>[1] “Foundations of Large Language Models”, 2025. <a href="https://arxiv.org/pdf/2501.09223">https://arxiv.org/pdf/2501.09223</a></li><li>[2] <strong>“</strong>Reinforcement Learning<strong>.”</strong> Enaris. Available at: <a href="https://enaris.org/material/en/Reinforcement%20Learning/index.html">https://enaris.org/material/en/Reinforcement%20Learning/index.html</a></li><li>[3] Y. Gokhale. “Introduction to LLMs and the Generative AI Part 5: RLHF,” <em>Medium</em>, 2023. Available at: <a href="https://medium.com/@yash9439/introduction-to-llms-and-the-generative-ai-part-5-rlhf-64e83fbcd795">https://medium.com/@yash9439/introduction-to-llms-and-the-generative-ai-part-5-rlhf-64e83fbcd795</a></li><li>[4] L. Weng. “An Overview of Reinforcement Learning,” 2018. Available at: <a href="https://lilianweng.github.io/posts/2018-02-19-rl-overview/">https://lilianweng.github.io/posts/2018-02-19-rl-overview/</a></li><li>[5] “DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning”, 2025. <a href="https://arxiv.org/pdf/2501.12948">https://arxiv.org/pdf/2501.12948</a></li><li>[6] “DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models”, 2025. <a href="https://arxiv.org/pdf/2402.03300">https://arxiv.org/pdf/2402.03300</a></li><li>[7] “Trust Region Policy Optimization”, 2017. <a href="https://arxiv.org/pdf/1502.05477">https://arxiv.org/pdf/1502.05477</a></li></ul>
+<p><img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=f3607a126194" width="1" height="1" alt="" />&lt;hr&gt;&lt;p&gt;<a href="https://medium.com/data-science-collective/training-large-language-models-from-trpo-to-grpo-f3607a126194">Training Large Language Models: From TRPO to GRPO</a> was originally published in <a href="https://medium.com/data-science-collective">Data Science Collective</a> on Medium, where people are continuing the conversation by highlighting and responding to this story.&lt;/p&gt;</p>]]></content><author><name></name></author></entry><entry><title type="html">A Short and Elegant Proof</title><link href="https://www.maximewolf.com//blog/2025/A-Short-and-Elegant-Proof/" rel="alternate" type="text/html" title="A Short and Elegant Proof" /><published>2025-01-25T00:00:00+00:00</published><updated>2025-01-25T00:00:00+00:00</updated><id>https://www.maximewolf.com//blog/2025/A-Short-and-Elegant-Proof</id><content type="html" xml:base="https://www.maximewolf.com//blog/2025/A-Short-and-Elegant-Proof/"><![CDATA[<blockquote>
+  <p><strong>Theorem</strong>: there does not exist a set that contains all sets.</p>
+</blockquote>
+
+<p>By contradiction, suppose that such a set exists and call it \(E\). Then it would include \(\mathcal{P}(E)\) (all subsets of \(E\)) i.e. there would be an injection \(g\) from \(\mathcal{P}(E)\) to \(E\). So there would also be a surjection \(f\) from \(E\) to \(\mathcal{P}(E)\) because every element \(x\) of \(\mathcal{P}(E)\) could have as (unique) antecedent \(g(x)\).</p>
+
+<p>Define \(D = \{x \in E \mid x \notin f(x)\} \in \mathcal{P}(E)\). Since \(f\) is surjective, \(\exists y \in E; f(y) = D\). Now, we have two cases:</p>
+<ul>
+  <li>If \(y \in D\), then \(y \notin f(y) = D\)</li>
+  <li>If \(y \notin D\), then \(y \in f(y) = D\)</li>
+</ul>
+
+<p>We have a contradiction in both cases. Therefore, the assumption that there exists a set containing all sets is false.
+Thanks to Cantor for this proof! :smile:</p>]]></content><author><name></name></author><category term="math" /><category term="set-theory," /><category term="proof," /><category term="mathematics" /><summary type="html"><![CDATA[A concise proof demonstrating that there does not exist a set that contains all sets!]]></summary></entry><entry><title type="html">The Number of Wasted Parking Spaces Caused by Random Parking</title><link href="https://www.maximewolf.com//blog/2024/Parking-Spots/" rel="alternate" type="text/html" title="The Number of Wasted Parking Spaces Caused by Random Parking" /><published>2024-09-29T00:00:00+00:00</published><updated>2024-09-29T00:00:00+00:00</updated><id>https://www.maximewolf.com//blog/2024/Parking-Spots</id><content type="html" xml:base="https://www.maximewolf.com//blog/2024/Parking-Spots/"><![CDATA[<p>Imagine a long parking lot with \(n\) parking spots arranged in a row, where each car occupies two adjacent spots. The cars arrive and park at random, choosing a pair of adjacent spots without any coordination. As more cars park, some spaces inevitably become isolated, making it impossible to park any more cars. This random process leaves a portion of the parking spots unusable, even though they are technically unoccupied.</p>
+
+<p>In this blog, we will explore how the number of free spots,  \(X_n\) , behaves as the number of parking spots \(n\) grows, and estimate the inefficiency compared to an optimal parking strategy.</p>
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    
+    <source class="responsive-img-srcset" media="(max-width: 480px)" srcset="/assets/img/blog_parking/gif1.gif-480.webp" />
+    <source class="responsive-img-srcset" media="(max-width: 800px)" srcset="/assets/img/blog_parking/gif1.gif-800.webp" />
+    <source class="responsive-img-srcset" media="(max-width: 1400px)" srcset="/assets/img/blog_parking/gif1.gif-1400.webp" />
+    
+
+    <!-- Fallback to the original file -->
+    <img src="/assets/img/blog_parking/gif1.gif" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="parking animation" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+    Animation of the parking process (3 spots are unusable)
+</div>
+
+<p>Let’s call \(I_{n, k}\) the event: “the first car parks in spot \(k\)” (hence occupying spots \(k\) and \(k+1\)).</p>
+
+<p>Since the first car parks at exactly one spot, we can write:</p>
+
+\[1 = \sum_{k=1}^{n-1} \mathbf{1}_{I_{n, k}}\]
+
+<p>and</p>
+
+\[X_n =  \sum_{k=1}^{n-1} X_n \mathbf{1}_{I_{n, k}}\]
+
+<p>The goal of this article is to study the behavior of \(u_n = \mathbb{E}[X_n]\) as \(n\) grows.</p>
+
+\[\begin{align*}
+\mathbb{E}[X_n] &amp;=  \sum_{k=1}^{n-1} \mathbb{E}[X_n \mathbf{1}_{I_{n, k}}] \\
+&amp;= \sum_{k=1}^{n-1} \sum_{j=1}^{n-1} j \mathbb{P}(X_n \mathbf{1}_{I_{n, k}} =j) \\
+\end{align*}\]
+
+<p>Since \(\{X_n \mathbf{1}_{I_{n, k}} = j\} = \{X_n =j\} \cap I_{n, k}\), we can write:</p>
+
+\[\mathbb{P}(X_n \mathbf{1}_{I_{n, k}} =j) = \mathbb{P}(X_n =j\mid I_{n,k}) \mathbb{P}(I_{n, k}) = \frac{1}{n-1} \mathbb{P}(X_n = j \mid I_{n, k})\]
+
+<p>Injecting this into the equation above, we get:</p>
+
+\[\mathbb{E}[X_n \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{j=1}^{n-1} j \mathbb{P}(X_n = j \mid I_{n, k}) = \frac{1}{n-1} \mathbb{E}[X_n \mid I_{n, k}]\]
+
+<p>Now, we need to compute the quantity \(\mathbb{E}[X_n \mid I_{n, k}]\).</p>
+
+<p>This is the expected number of free spots at the end of the parking process, given that the first car parks at spot \(k\). We can actually see the parking lane as two separate lanes, one to the left of spot \(k\) and one to the right of spot \(k+1\). The expected number of free spots on the left is \(u_{k-1}\) (there are \(k-1\) spots on the left after the first car parks), and the expected number of free spots on the right is \(u_{n-k-1}\) (there are \(n-k-1\) spots on the right after the first car parks).</p>
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    
+    <source class="responsive-img-srcset" media="(max-width: 480px)" srcset="/assets/img/blog_parking/img1-480.webp" />
+    <source class="responsive-img-srcset" media="(max-width: 800px)" srcset="/assets/img/blog_parking/img1-800.webp" />
+    <source class="responsive-img-srcset" media="(max-width: 1400px)" srcset="/assets/img/blog_parking/img1-1400.webp" />
+    
+
+    <!-- Fallback to the original file -->
+    <img src="/assets/img/blog_parking/img1.png" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="parking animation" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+    Illustration of the derived formula
+</div>
+
+<p>Therefore, we can write:</p>
+
+\[\mathbb{E}[X_n \mid I_{n, k}] = u_{k-1} + u_{n-k-1}\]
+
+<p>So, we have:</p>
+
+\[u_n = \frac{1}{n-1} \sum_{k=1}^{n-1} \mathbb{E}[X_n \mid \mathbf{1}_{I_{n, k}}] = \frac{1}{n-1} \sum_{k=1}^{n-1} (u_{k-1} + u_{n-k-1}) = \frac{2}{n-1} \sum_{k=1}^{n-1} u_{k-1} = \frac{2}{n-1} \sum_{k=1}^{n-2} u_k\]
+
+<p>Note that the last equality comes from the fact that \(u_{0} = \mathbb{E}[X_0] = 0\), because there are no free spots when there are no parking spots.</p>
+
+<p>We can now write the recursive formula for \(u_n\):</p>
+
+\[\boxed{u_n = \frac{2}{n-1} \sum_{k=1}^{n-2} u_k}\]
+
+<p>One method to deal with such a recursive formula is to study the generating function of the sequence \(u_n\). We define the generating function as:</p>
+
+\[g(z) = \sum_{n=0}^{\infty} u_n z^n\]
+
+<p>The radius of convergence \(R\) of this series is defined as the supremum of the set of real numbers \(r\) such that the series converges for \(\left| z \right|&lt;r\).
+We also have:</p>
+
+\[\left| g(z) \right| \leq \sum_{n=0}^{\infty} \left|u_n\right| \left|z\right|^n \leq \sum_{n=0}^{\infty} n\left|z\right|^n\]
+
+<p>And, for \(\lvert z \rvert &lt;1\), we know that:</p>
+
+\[\sum_{n=0}^{\infty} n\left|z\right|^n = \frac{z}{(1-z)^2}\]
+
+<p>by derivation of the geometric series.
+So the series converges for \(\left|z\right|&lt;1\) and the radius of convergence verifies \(R \geq 1\).</p>
+
+<p>Let’s take \(z \in (-1, 1)\).</p>
+
+<p>We want to leverage the recursive formula of \(u_n\) to express \(g(z)\). Since one term \(u_k\) can be expressed as a weighted sum of the previous terms, we are motivated to use Cauchy’s product to make the sum appear in the formula. Here is one way to do it:</p>
+
+\[\begin{align*}
+\left(\sum_{p=0}^{\infty} z^p \right) \left( \sum_{q=0}^{\infty} u_q z^q \right)
+&amp;= \sum_{n=0}^{\infty} \left( \sum_{k=0}^{n} u_k \times 1 \right) z^n \\
+&amp;= \sum_{n=0}^{\infty} \left( \sum_{k=0}^{n} u_k \right) z^n \\
+&amp;= \sum_{n=0}^{\infty} \frac{(n+1)u_{n+2}}{2} z^n
+\end{align*}\]
+
+<p>This is very convenient because we know that \(\sum_{p=0}^{\infty} z^p = \frac{1}{1-z}\), so multiplying each side of the equation by \(2z^2\) and noting that \(u_0 = u_1 = 0\), we get:</p>
+
+\[\begin{align*}
+\frac{2z^2}{1-z} g(z) &amp;= \sum_{n=0}^{\infty} (n+1)u_{n+2} z^{n+2} \\
+&amp;= \sum_{n=0}^{\infty} (n+2)u_{n+2} z^{n+2} - \sum_{n=0}^{\infty} u_{n+2} z^{n+2} \\
+&amp;= \sum_{n=0}^{\infty} (n+2)u_{n+2} z^{n+2} - \sum_{n=0}^{\infty} u_{n} z^{n} \\
+&amp;= z \sum_{n=0}^{\infty} (n+2)u_{n+2} z^{n+1} - g(z) \\
+&amp;= z \sum_{n=0}^{\infty} (n+1)u_{n+1} z^{n} - g(z) \\
+&amp;= z g'(z) - g(z)
+\end{align*}\]
+
+<p>This gives us a differential equation for \(g(z)\), for all \(z \in (-1, 1)\):</p>
+
+\[\boxed{zg'(z) = g(z) + \frac{2z^2}{1-z}g(z)}\]
+
+<p>Let’s try to find a candidate solution for this differential equation. Suppose that \(z &gt; 0\), then we can write:</p>
+
+\[g'(z) = (\frac{1}{z} + \frac{2z}{1-z})g(z)\]
+
+<p>We define \(f(z) = \frac{1}{z} + \frac{2z}{1-z}\), and we know that solutions have the form 
+\(g(z) = \alpha \exp(\int f(z) dz) + \beta\)</p>
+
+<p>We can compute the integral of \(f(z)\):</p>
+
+\[\begin{align*}
+\int f(z) dz &amp;= \int \left(\frac{1}{z} + \frac{2z}{1-z} \right) dz \\
+&amp;= \int \left(\frac{1}{z} -2 + \frac{2}{1-z} \right) dz \\
+&amp;= \log(z) - 2z - 2 \log(1-z) + C
+\end{align*}\]
+
+<p>Therefore, the general solution of the differential equation is of the form:</p>
+
+\[g(z) = \alpha \exp(-2z) \frac{z}{(1-z)^2} + \beta\]
+
+<p>We verify that this is also solution of the equation for all \(z \in (-1, 1)\) by checking that the derivative of the function satisfies the differential equation. Also, \(\beta = g(0) = u_0 = 0\) and calculating \(g'(z)\) gives \(0 = u_1 = g'(0) = \alpha \left[ \exp(-2 \times 0) \frac{1+0}{(1-0)^3}-2\exp(-2 \times 0) \frac{0}{(1-0)^2} \right] = \alpha\).</p>
+
+<p>Therefore,</p>
+
+\[\boxed{g(z) = \exp(-2z) \frac{z}{(1-z)^2} = \sum_{n=0}^{\infty} u_n z^n}\]
+
+<p>It’s time for more Cauchy products! Remember that:</p>
+
+\[z\exp(-2z) = z\sum_{n=0}^{\infty} \frac{1}{n!}(-2z)^n = \sum_{n=0}^{\infty} \frac{1}{n!}(-2)^n z^{n+1}\]
+
+<p>and</p>
+
+\[\frac{1}{(1-z)^2} = \frac{d}{dz}\left( \frac{1}{1-z} \right) = \frac{d}{dz}\left( \sum_{n=0}^{\infty} z^n \right) = \sum_{n=0}^{\infty} (n+1)z^n\]
+
+<p>Define \(a_{n+1} = \frac{1}{n!}(-2)^n\) and \(b_n = n+1\), then we have, for \(n \geq 1\):</p>
+
+\[\begin{align*}
+u_n &amp;= \sum_{k=0}^{n} a_{k+1}b_{n-k-1} \\
+&amp;= \sum_{k=0}^{n} \frac{1}{k!}(-2)^k (n-k) \\
+&amp;= n\sum_{k=0}^{n} \frac{1}{k!}(-2)^k - \sum_{k=0}^{n} \frac{1}{(k-1)!}(-2)^k \\
+&amp;= n\sum_{k=0}^{n} \frac{1}{k!}(-2)^k + 2\sum_{k=0}^{n-1} \frac{1}{k!}(-2)^k \\
+&amp;= n \left( e^{-2} - \sum_{k=n+1}^{\infty} \frac{1}{k!}(-2)^k \right) + 2\left( e^{-2} - \sum_{k=n}^{\infty} \frac{1}{k!}(-2)^k \right) \\
+&amp;= n \left( e^{-2} + O\left(\frac{1}{(n+1)!}\right) \right) + 2\left( e^{-2} + o\left( 1 \right) \right) \\
+&amp;= (n+2)e^{-2} + O\left(\frac{1}{n!}\right) + o(1) \\
+&amp;= \frac{n}{e^2} + \frac{2}{e^2} + o(1) \\
+
+\end{align*}\]
+
+<p>Finally, we conclude that:</p>
+
+\[\boxed{u_n = \frac{n}{e^2} + \frac{2}{e^2} + o(1)}\]
+
+<p>and</p>
+
+\[\boxed{u_n \sim \frac{n}{e^2}}\]
+
+<p>Conclusion: the proportion of “wasted” spots in the parking lot tends to \(1/e^2 \approx 13.5\%\) if people park randomly. That’s why you should always be careful when parking your car! :wink:</p>
+
+<p>Feel free to leave a comment below if you have any questions or suggestions!</p>]]></content><author><name></name></author><category term="math" /><summary type="html"><![CDATA[Estimating the number of wasted parking spaces caused by random parking.]]></summary></entry><entry><title type="html">The Math Behind “The Curse of Dimensionality”</title><link href="https://www.maximewolf.com//blog/2024/the-math-behind-the-curse-of-dimensionality/" rel="alternate" type="text/html" title="The Math Behind “The Curse of Dimensionality”" /><published>2024-04-20T15:10:24+00:00</published><updated>2024-04-20T15:10:24+00:00</updated><id>https://www.maximewolf.com//blog/2024/the-math-behind-the-curse-of-dimensionality</id><content type="html" xml:base="https://www.maximewolf.com//blog/2024/the-math-behind-the-curse-of-dimensionality/"><![CDATA[<h4>Dive into the “Curse of Dimensionality” concept and understand the math behind all the surprising phenomena that arise in high dimensions.</h4>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*-CoarMnxGCnELU9hYZcvtw.jpeg" /><figcaption>Image from Dall-E</figcaption></figure>
+<p>In the realm of machine learning, handling high-dimensional vectors is not just common; it’s essential. This is illustrated by the architecture of popular models like Transformers. For instance, BERT uses 768-dimensional vectors to encode the tokens of the input sequences it processes and to better capture complex patterns in the data. Given that our brain struggles to visualize anything beyond 3 dimensions, the use of 768-dimensional vectors is quite mind-blowing!</p>
+<p>While some Machine and Deep Learning models excel in these high-dimensional scenarios, they also present many challenges. In this article, we will explore the concept of the “curse of dimensionality”, explain some interesting phenomena associated with it, delve into the mathematics behind these phenomena, and discuss their general implications for your Machine Learning models.</p>
+<p>Note that detailed mathematical proofs related to this article are <a href="https://www.maximewolf.com/blog/2024/The-Volume-of-the-nball/">available on my website</a> as a supplementary extension to this article.</p>
+<h3>What is the curse of dimensionality?</h3>
+<p>People often assume that geometric concepts familiar in three dimensions behave similarly in higher-dimensional spaces. <strong>This is not the case</strong>. As dimension increases, many interesting and counterintuitive phenomena arise. The “Curse of Dimensionality” is a term invented by Richard Bellman (famous mathematician) that refers to all these surprising effects.</p>
+<p>What is so special about high-dimension is how the “volume” of the space (we’ll explore that in more detail soon) is growing <strong>exponentially</strong>. Take a graduated line (in one dimension) from 1 to 10. There are 10 integers on this line. Extend that in 2 dimensions: it is now a square with 10 × 10 = 100 points with integer coordinates. Now consider “only” 80 dimensions: you would already have <strong>10⁸⁰ points</strong> which is the number of atoms in the universe.</p>
+<p>In other words, as the dimension increases, the volume of the space grows exponentially, resulting in data becoming <strong>increasingly sparse</strong>.</p>
+<blockquote>High-dimensional spaces are “empty”</blockquote>
+<p>Consider this other example. We want to calculate the farthest distance between two points in a unit hypercube (where each side has a length of 1):</p>
+<ul><li>In <strong>1 dimension</strong> (the hypercube is a line segment from 0 to 1), the maximum distance is simply 1.</li><li>In <strong>2 dimensions</strong> (the hypercube forms a square), the maximum distance is the distance between the opposite corners [0,0] and [1,1], which is √2, calculated using the Pythagorean theorem.</li><li>Extending this concept to <strong>n dimensions</strong>, the distance between the points at [0,0,…,0] and [1,1,…,1] is √n. This formula arises because each additional dimension adds a square of 1 to the sum under the square root (again by the Pythagorean theorem).</li></ul>
+<p>Interestingly, as the number of dimensions n increases, the largest distance within the hypercube grows at an O(√n) rate. This phenomenon illustrates a <strong>diminishing returns effect</strong>, where increases in dimensional space lead to proportionally smaller gains in spatial distance. More details on this effect and its implications will be explored in the following sections of this article.</p>
+<h3>The notion of distance in high dimensions</h3>
+<p>Let’s dive deeper into the notion of distances we started exploring in the previous section.</p>
+<p>We had our first glimpse of how high-dimensional spaces render the notion of distance almost <strong>meaningless</strong>. But what does this really mean, and can we mathematically visualize this phenomenon?</p>
+<p>Let’s consider an experiment, using the same n-dimensional unit hypercube we defined before. First, we generate a dataset by randomly sampling many points in this cube: we effectively simulate a multivariate uniform distribution. Then, we sample another point (a “query” point) from that distribution and observe the <strong>distance from its nearest and farthest neighbor in our dataset</strong>.</p>
+<p>Here is the corresponding Python code.</p>
+<pre>def generate_data(dimension, num_points):<br />    &#39;&#39;&#39; Generate random data points within [0, 1] for each coordinate in the given dimension &#39;&#39;&#39;<br />    data = np.random.rand(num_points, dimension)<br />    return data<br /><br /><br />def neighbors(data, query_point):<br />    &#39;&#39;&#39; Returns the nearest and farthest point in data from query_point &#39;&#39;&#39;<br />    nearest_distance = float(&#39;inf&#39;)<br />    farthest_distance = 0<br />    for point in data:<br />        distance = np.linalg.norm(point - query_point)<br />        if distance &lt; nearest_distance:<br />            nearest_distance = distance<br />        if distance &gt; farthest_distance:<br />            farthest_distance = distance<br />    return nearest_distance, farthest_distance</pre>
+<p>We can also plot these distances:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/640/1*g0JgKAi0-dw_fyW9FRLaoQ.png" /><figcaption>Distances to nearest and farthest points as n increases (Image by the author)</figcaption></figure>
+<p>Using a log scale, we observe that the <strong>relative</strong> difference between the distance to the nearest and farthest neighbor tends to decrease as the dimension increases.</p>
+<p>This is a very unintuitive behavior: as explained in the previous section, points are very sparse from each other because of the exponentially increasing volume of the space, but at the same time, the <strong>relative</strong> distances between points become smaller.</p>
+<blockquote>The notion of nearest neighbors vanishes</blockquote>
+<p>This means that the very concept of <strong>distance</strong> becomes less relevant and less discriminative as the dimension of the space increases. As you can imagine, it poses problems for Machine Learning algorithms that solely rely on distances such as kNN.</p>
+<h3>The maths: the n-ball</h3>
+<p>We will now talk about some other interesting phenomena. For this, we’ll need the <strong>n-ball</strong>. A n-ball is the generalization of a ball in n dimensions. The n-ball of radius R is the collection of points at a distance at most R from the center of the space 0.</p>
+<p>Let’s consider a radius of 1. The 1-ball is the segment [-1, 1]. The 2-ball is the disk delimited by the unit circle, whose equation is x² + y² ≤ 1. The 3-ball (what we normally call a “ball”) has the equation x² + y² + z² ≤ 1. As you understand, we can extend that definition to any dimension:</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/400/1*KVWjpsWBmsfv7dJtCjgfyA.png" /></figure>
+<p>The question now is: what is the volume of this ball? This is not an easy question and requires quite a lot of maths, which I won’t detail here. However, you can find all the details on my website, in <a href="https://www.maximewolf.com/blog/2024/The-Volume-of-the-nball/">my post about the volume of the n-ball</a>.</p>
+<p>After a lot of fun (integral calculus), you can prove that the volume of the n-ball can be expressed as follows, where Γ denotes the <a href="https://en.wikipedia.org/wiki/Gamma_function">Gamma function</a>.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/283/1*vNIwC7a5oj_w3YsyCjfejg.png" /></figure>
+<p>For example, with R = 1 and n = 2, the volume is πR², because Γ(2) = 1. This is indeed the “volume” of the 2-ball (also called the “area” of a circle in this case).</p>
+<p>However, beyond being an interesting mathematical challenge, the volume of the n-ball also has some very surprising properties.</p>
+<blockquote>As the dimension n increases, the volume of the n-ball converges to 0.</blockquote>
+<p>This is true for every radius, but let’s visualize this phenomenon with a few values of R.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/640/1*PKvuwKI8qlpTOy8Fd3qL1w.png" /><figcaption>Volume of the n-ball for different radii as the dimension increases (Image by the author)</figcaption></figure>
+<p>As you can see, it only converges to 0, but it starts by increasing and then decreases to 0. For R = 1, the ball with the largest volume is the 5-ball, and the value of n that reaches the maximum shifts to the right as R increases.</p>
+<p>Here are the first values of the volume of the unit n-ball, up to n = 10.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/450/0*mf4mXZlsQ1pPljaH.jpg" /><figcaption>Volume of the unit n-ball for different values of n (Image by the author)</figcaption></figure>
+<blockquote>The volume of a high-dimensional unit ball is concentrated near its surface.</blockquote>
+<p>For small dimensions, the volume of a ball looks quite “homogeneous”: this is not the case in high dimensions.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*9TMLQ3hyKMZgKWlb.png" /><figcaption>A spherical shell</figcaption></figure>
+<p>Let’s consider an n-ball with radius R and another with radius R-dR where dR is very small. The portion of the n-ball between these 2 balls is called a “shell” and corresponds to the portion of the ball near its surface (see the visualization above in 3D). We can compute the ratio of the “inner” volume of the ball and the volume of the thin shell only.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/640/1*f85wYocXtt_Oz5v4xA08tw.png" /><figcaption>Ratio (inner volume / total volume) as n increases (Image by the author)</figcaption></figure>
+<p>As we can see, it converges very quickly to 0: almost all the volume is near the surface in high dimensional spaces. For instance, for R = 1, dR = 0.05, and n = 50, about 92.3% of the volume is concentrated in the thin shell. This shows that in higher dimensions, the volume is in “corners”. This is again related to the distortion of the concept of distance we have seen earlier.</p>
+<p>Note that the volume of the unit hypercube (here, denoting a cube centered at zero with a side length of 2) is 2ⁿ. The unit sphere is basically “empty” in very high dimensions, while the unit hypercube, in contrast, gets exponentially more points. Again, this shows how the idea of a “nearest neighbor” of a point loses its effectiveness because there is almost no point within a distance R of a query point q when n is large.</p>
+<h3>Curse of dimensionality, overfitting, and Occam’s Razor</h3>
+<p>The curse of dimensionality is closely related to the overfitting principle. Because of the exponential growth of the volume of the space with the dimension, we need very large datasets to adequately capture and model high-dimensional patterns. Even worse: we need a number of samples that grows <strong>exponentially</strong> with the dimension to overcome this limitation. This scenario, characterized by many features yet relatively few data points, is particularly <strong>prone to overfitting</strong>.</p>
+<p>Occam’s Razor suggests that <strong>simpler models are generally better than complex ones</strong> because they are less likely to overfit. This principle is particularly relevant in high-dimensional contexts (where the curse of dimensionality plays a role) because it encourages the reduction of model complexity.</p>
+<p>Applying Occam’s Razor principle in high-dimensional scenarios can mean reducing the dimensionality of the problem itself (via methods like PCA, feature selection, etc.), thereby <strong>mitigating some effects of the curse of dimensionality</strong>. Simplifying the model’s structure or the feature space helps in managing the sparse data distribution and in making distance metrics more meaningful again. For instance, dimensionality reduction is a very common <strong>preliminary step</strong> before applying the kNN algorithm. More recent methods, such as <strong>ANNs</strong> (Approximate Nearest Neighbors) also emerge as a way to deal with high-dimensional scenarios.</p>
+<h3>Blessing of dimensionality?</h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*5hnyu5VwJ1JqdfoTqYgoFQ.png" /><figcaption>Image by Dall-E</figcaption></figure>
+<p>While we’ve outlined the challenges of high-dimensional settings in machine learning, there are also <strong>some advantages</strong>!</p>
+<ul><li>High dimensions can enhance <strong>linear separability</strong>, making techniques like kernel methods more effective.</li><li>Additionally, deep learning architectures are <strong>particularly adept</strong> at navigating and extracting complex patterns from high-dimensional spaces.</li></ul>
+<p>As always with Machine Learning, <strong>this is a trade-off</strong>: leveraging these advantages involves balancing the increased computational demands with potential gains in model performance.</p>
+<h3>Conclusion</h3>
+<p>Hopefully, this gives you an idea of how “weird” geometry can be in high-dimension and the many challenges it poses for machine learning model development. We saw how, in high-dimensional spaces, data is very sparse but also tends to be concentrated in the corners, and distances lose their usefulness. For a deeper dive into the n-ball and mathematical proofs, I encourage you to visit <a href="https://www.maximewolf.com/blog/2024/The-Volume-of-the-nball/">the extended of this article on my website</a>.</p>
+<p>While the “curse of dimensionality” outlines significant limitations in high-dimensional spaces, it’s exciting to see how modern deep learning models are increasingly adept at navigating these complexities. Consider the embedding models or the latest LLMs, for example, which utilize very high-dimensional vectors to more effectively discern and model textual patterns.</p>
+<p>Want to learn more about Transformers and how they transform your data under the hood? Check out my previous article:</p>
+<p><a href="https://medium.com/towards-data-science/transformers-how-do-they-transform-your-data-72d69e383e0d">Transformers: How Do They Transform Your Data?</a></p>
+<ul><li>Feel free to connect on <a href="https://www.linkedin.com/in/maxime-wolf/">LinkedIn</a></li><li>Follow me on <a href="https://github.com/maxime7770">GitHub</a> for more content</li><li>Visit my website: <a href="http://maximewolf.com">maximewolf.com</a></li></ul>
+<p>References:</p>
+<ul><li>[1] “Volume of an n-ball.” Wikipedia, <a href="https://en.wikipedia.org/wiki/Volume_of_an_n-ball">https://en.wikipedia.org/wiki/Volume_of_an_n-ball</a></li><li>[2] “Curse of Dimensionality.” Wikipedia, <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality#Blessing_of_dimensionality">https://en.wikipedia.org/wiki/Curse_of_dimensionality#Blessing_of_dimensionality</a></li><li>[3] Peterson, Ivars. “An Adventure in the Nth Dimension.” American Scientist, <a href="https://www.americanscientist.org/article/an-adventure-in-the-nth-dimension">https://www.americanscientist.org/article/an-adventure-in-the-nth-dimension</a></li><li>[4] Zhang, Yuxi. “Curse of Dimensionality.” Geek Culture on Medium, July 2021, <a href="https://medium.com/geekculture/curse-of-dimensionality-e97ba916cb8f">https://medium.com/geekculture/curse-of-dimensionality-e97ba916cb8f</a></li><li>[5] “Approximate Nearest Neighbors (ANN).” Activeloop, <a href="https://www.activeloop.ai/resources/glossary/approximate-nearest-neighbors-ann/">https://www.activeloop.ai/resources/glossary/approximate-nearest-neighbors-ann/</a></li></ul>
+<p><img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=cf8780307d74" width="1" height="1" alt="" />&lt;hr&gt;&lt;p&gt;<a href="https://medium.com/data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74">The Math Behind “The Curse of Dimensionality”</a> was originally published in <a href="https://medium.com/data-science">TDS Archive</a> on Medium, where people are continuing the conversation by highlighting and responding to this story.&lt;/p&gt;</p>]]></content><author><name></name></author></entry><entry><title type="html">The Volume of the n-ball</title><link href="https://www.maximewolf.com//blog/2024/The-Volume-of-the-nball/" rel="alternate" type="text/html" title="The Volume of the n-ball" /><published>2024-04-19T00:00:00+00:00</published><updated>2024-04-19T00:00:00+00:00</updated><id>https://www.maximewolf.com//blog/2024/The-Volume-of-the-nball</id><content type="html" xml:base="https://www.maximewolf.com//blog/2024/The-Volume-of-the-nball/"><![CDATA[<h3 id="introduction">Introduction</h3>
+
+<p>This post is an extension of my Medium article: <a href="https://medium.com/towards-data-science/the-math-behind-the-curse-of-dimensionality-cf8780307d74"><em>The Math Behind “The Curse of Dimensionality”</em></a>. If you have any questions or feedback, feel free to leave a comment below or reach out on <a href="https://www.linkedin.com/in/maxime-wolf/">LinkedIn</a>.</p>
+
+<p>Here, I derive the formula for the volume of the n-ball using integral calculus and Wallis integrals.</p>
+
+<p>An n-ball is a generalization of the ordinary “ball” to arbitrary dimensions. It is defined as the set of points in the n-dimensional Euclidean space that are at a fixed distance from a central point (we will condider 0, the origin). The n-ball has important applications, particulary in  machine learning and data analysis.</p>
+
+<p>The equation of an n-ball is given by:</p>
+
+\[x_1^2 + x_2^2 + \ldots + x_{N}^2 \leq r^2\]
+
+<p>where \(r\) is the radius of the ball.</p>
+
+<h3 id="derivation-of-the-volume-formula">Derivation of the volume formula</h3>
+
+<p>One of the most important properties of the n-ball is its volume. The volume of an n-ball of radius \(r\) is given by:</p>
+
+\[V_N(r) = \frac{\pi^{(N+1)/2}}{\Gamma((N+1)/2)} r^{N+1}\]
+
+<p>where \(\Gamma\) is the gamma function. 
+In the rest of this post, we will derive this formula.</p>
+
+<p>We define the unit (radius equal to 1) n-ball as the following space: \(\mathcal{B}_n = \{x_1, \dots, x_m; \sum\limits_{i=1}^n x_i^2 \leq 1 \}\)</p>
+
+<p>We note \(V_n = V_n(1)\) the volume of this ball. And more generally \(V_n(R)\) the volume of the n-ball with radius \(R\). From now on, we will use \(V_n\) to refer to the volume of the unit n-ball:</p>
+
+\[V_n = \int_{x \in \mathcal{B}_n} dx_1 dx_2\dots dx_n\]
+
+<p>First, note that the volume of the n-ball of radius \(R\) is \(R^n V_n\): simply use the change of variable \(y_i \leftarrow x_i / R\) in the expression of \(V_n(R)\).</p>
+
+<p>Now, let’s simplify \(V_n\):</p>
+
+\[\begin{align*}
+V_n &amp;= \int_{x_1^2 + \dots + x_n^2 \leq 1} dx_1 dx_2\dots dx_n \\
+ &amp;= \int_{x_1^2 \leq 1} \left( \int_{x_2^2 + \dots + x_n^2 \leq 1 - x_1^2} dx_2\dots dx_n \right) dx_1 \\
+&amp;=  \int_{x_1^2 \leq 1} V_{n-1}\left(\sqrt{1-x_1^2}\right) dx_1
+\end{align*}\]
+
+<p>We can now replace the expression of the volume of the \(n-1\) ball of radius \(\sqrt{1-x_1^2}\) with the previous relation:</p>
+
+\[\begin{align*}
+V_n &amp;= \int_{x_1^2 \leq 1} V_{n-1}\left(\sqrt{1-x_1^2} \right) dx_1 \\
+&amp;= V_{n-1}\int_{x_1^2 \leq 1} \left(\sqrt{1-x_1^2}\right)^{n-1} dx_1 \\
+&amp;= V_{n-1}\int_{-1}^{1} \left(\sqrt{1-x^2}\right)^{n-1} dx
+
+\end{align*}\]
+
+<p>We use the change of variable \(x = \cos(\theta)\) (so \(dx = -\sin(\theta) d\theta\)) to simplify the integral:</p>
+
+\[\begin{align*}
+V_n &amp;= V_{n-1}\int_{-1}^{1} \left(\sqrt{1-x^2}\right)^{n-1} dx \\
+&amp;= -V_{n-1}\int_{\pi}^{0} \sin^{n-1}(\theta) \sin(\theta) d\theta \\
+&amp;= V_{n-1}\int_{0}^{\pi} \sin^{n}(\theta) d\theta \\
+&amp;= 2 V_{n-1}\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta \\
+&amp;= I_n V_{n-1}
+\end{align*}\]
+
+<p>We note \(I_n = 2\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta\).</p>
+
+<p>Note that \(\int_{0}^{\pi/2} \sin^{n}(\theta) d\theta\) is a famous integral in mathematics: it is called the Wallis integral and often denoted by \(W_n\). It can be derived using integration by parts (I will prove this formula in the <a href="#appendix-derivation-of-the-wallis-integrals">appendix</a>). Depending on the parity of \(n\), the integral can be expressed as:</p>
+
+<p>\(W_{2p} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2}\)
+and 
+\(W_{2p+1} = \frac{2^{2p} (p!)^2}{(2p+1)!}\)</p>
+
+<p>Using our recursive relation, we know that: \(V_n = I_n I_{n-1} \dots I_2 V_1\) and \(V_1 = V_1(1) = 2\) (the length of the segment \([-1, 1]\)).</p>
+
+<p>We are going to make use of a very useful property:</p>
+
+\[I_{2p}I_{2p+1} = 4W_{2p}W_{2p+1} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2} \frac{2^{2p} (p!)^2}{(2p+1)!} = \frac{2\pi}{2p+1} = \frac{\pi}{p+1/2}\]
+
+<p>We will also need the Gamma function. All you need to know is these 2 expressions:</p>
+
+\[\Gamma(n) = (n-1)!\]
+
+<p>and</p>
+
+\[\Gamma(n+1/2) = (n-1/2)\times \dots \times 1/2 \times \pi ^{1/2}\]
+
+<p>Now, we can easily compute the volume \(V_n\) by grouping successive terms, depending again on the parity of \(n\).</p>
+
+<p>If \(n = 2p\):
+\(\begin{align*}
+V_{2p} &amp;= I_{2p}I_{2p-1} \dots I_2 V_1 \\
+&amp;= I_{2p} (I_{2p-1}I_{2p-2}) \dots (I_3I_2)\times 2 \\
+&amp;= \pi \times \frac{(2p)!}{2^{2p}(p!)^2} \times \frac{\pi}{p-1/2} \times \frac{\pi}{p-3/2}\times  \dots \times \frac{\pi}{3/2} \times \frac{\pi}{1/2} \\
+&amp;= \frac{(2p)!}{2^{p}(p!)^2} \times \frac{\pi^{p}}{(2p-1)(2p-3)\dots (1)} \\
+&amp;= \frac{\pi^{p}}{2^p} \times \frac{(2p)!}{(p!)^2} \times \frac{(2p)(2p-2)\dots (4) (2)}{(2p!)} \\
+&amp;= \frac{\pi^{p}}{2^p} \times \frac{(2p)!}{(p!)^2} \times \frac{2^p p!}{(2p)!} \\
+&amp;= \frac{\pi^p}{p!} \\
+&amp;= \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)}
+\end{align*}\)</p>
+
+<p>If \(n = 2p+1\), it is a bit less complicated:</p>
+
+\[\begin{align*}
+V_{2p+1} &amp;= I_{2p+1}I_{2p}I_{2p-1} \dots I_2 V_1 \\
+&amp;= (I_{2p+1}I_{2p})(I_{2p-1}I_{2p-2}) \dots (I_3I_2)\times 2 \\
+&amp;= \frac{\pi}{p+1/2} \times \frac{\pi}{p-1/2} \times \frac{\pi}{p-3/2}\times  \dots \times \frac{\pi}{3/2} \times \frac{1}{1/2} \\
+&amp;= \frac{\pi^{p+\frac{1}{2}}}{(p+1/2)(p-1/2)\dots (1/2) \pi ^ {\frac{1}{2}}} \\
+&amp;= \frac{\pi^{p+\frac{1}{2}}}{\Gamma(p+\frac{1}{2} + 1)} \\
+&amp;= \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)}
+
+\end{align*}\]
+
+<p>So we obtained a single formula for the volume of the n-ball, regardless of the parity of \(n\):</p>
+
+\[V_n = V_n(1) = \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)}\]
+
+<p>And by extension, the volume of the n-ball of radius \(R\) is:</p>
+
+\[\boxed{V_n(R) = R^n V_n(1) = R^n \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)}}\]
+
+<p>Note that there is a very easy way to derive the area of the surface of n-ball using this expression. We simply need to derive the volume of the n-ball of radius \(R\) with respect to \(R\) and we obtain the surface area of the n-ball of radius \(R\):</p>
+
+\[\frac{d}{dR} V_n(R) = n R^{n-1} V_n(1) = n R^{n-1} \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)}\]
+
+<p>Paricularly, the surface area of the n-ball of radius \(1\) is:</p>
+
+\[S_n = n \frac{\pi^{n/2}}{\Gamma(\frac{n}{2} + 1)} = \frac{2 \pi^{n/2}}{\Gamma(\frac{n}{2})}\]
+
+<p><br />
+<br /></p>
+
+<hr />
+
+<h3 id="appendix-derivation-of-the-wallis-integrals">Appendix: Derivation of the Wallis integrals</h3>
+
+<p>The Wallis integrals are defined as:</p>
+
+\[W_{n} = \int_{0}^{\pi/2} \sin^{n}(\theta) d\theta\]
+
+<p>We will derive a recursive formula using integration by parts.</p>
+
+\[\begin{align*}
+W_n &amp;= \int_{0}^{\pi/2} \sin^{n}(\theta) d\theta \\
+&amp;= \int_{0}^{\pi/2} \sin^{n-2}(\theta) (1- \cos^2(\theta)) d\theta \\
+&amp;= W_{n-2} - \int_{0}^{\pi/2} \sin^{n-2}(\theta) \cos^2(\theta) d\theta \\
+&amp;= W_{n-2} - \left(\left[\frac{\sin^{n-1}(\theta)}{n-1}\cos(\theta) \right]_0^{\pi/2} - \frac{1}{n-1} \int_0^{\pi/2}-\sin^{n-1}(\theta)\sin(x)d\theta\right) \\
+&amp;= W_{n-2} - \frac{1}{n-1} W_{n}
+\end{align*}\]
+
+<p>We conclude that:</p>
+
+\[W_n = \frac{n-1}{n} W_{n-2}\]
+
+<p>We can now distinguish 2 cases depending on the parity of \(n\):</p>
+
+<ul>
+  <li>If \(n = 2p\), we have:</li>
+</ul>
+
+\[W_{2p} = \frac{2p-1}{2p} W_{2p-2} = \frac{2p-1}{2p} \frac{2p-3}{2p-2} \dots \frac{1}{2} W_0 = \frac{2p-1}{2p} \frac{2p-3}{2p-2} \dots \frac{1}{2} \frac{\pi}{2} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2}\]
+
+<p>We obtained the last equality by multiplying the denominator and the numerator by \(2p(2p-2)\dots 2\) to make \((2p)!\) appear. We then factorized each term of the denominator by 2.</p>
+
+<ul>
+  <li>Similarly, if \(n = 2p+1\), we have:</li>
+</ul>
+
+\[W_{2p+1} = \frac{2p}{2p+1} W_{2p-1} = \frac{2p}{2p+1} \frac{2p-2}{2p-1} \dots \frac{2}{3} W_1 = \frac{2p}{2p+1} \frac{2p-2}{2p-1} \dots \frac{2}{3} \frac{2}{1} = \frac{2^{2p} (p!)^2}{(2p+1)!}\]
+
+<p>We conclude that</p>
+
+\[\boxed{W_{2p} = \frac{\pi}{2} \frac{(2p)!}{2^{2p}(p!)^2}}\]
+
+<p>and</p>
+
+\[\boxed{W_{2p+1} = \frac{2^{2p} (p!)^2}{(2p+1)!}}\]]]></content><author><name></name></author><category term="math" /><summary type="html"><![CDATA[Derivation of the formula for the volume of the n-ball.]]></summary></entry><entry><title type="html">Transformers: How Do They Transform Your Data?</title><link href="https://www.maximewolf.com//blog/2024/transformers-how-do-they-transform-your-data/" rel="alternate" type="text/html" title="Transformers: How Do They Transform Your Data?" /><published>2024-03-28T22:29:20+00:00</published><updated>2024-03-28T22:29:20+00:00</updated><id>https://www.maximewolf.com//blog/2024/transformers-how-do-they-transform-your-data</id><content type="html" xml:base="https://www.maximewolf.com//blog/2024/transformers-how-do-they-transform-your-data/"><![CDATA[<h4>Diving into the Transformers architecture and what makes them unbeatable at language tasks</h4>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*eBqke1in-L9fFZrZ6hjdRA.jpeg" /><figcaption>Image by the author</figcaption></figure>
+<p>In the rapidly evolving landscape of artificial intelligence and machine learning, one innovation stands out for its profound impact on how we process, understand, and generate data: <strong>Transformers</strong>. Transformers have revolutionized the field of natural language processing (NLP) and beyond, powering some of today’s most advanced AI applications. But what exactly are Transformers, and how do they manage to transform data in such groundbreaking ways? This article demystifies the inner workings of Transformer models, focusing on the <strong>encoder architecture</strong>. We will start by going through the implementation of a Transformer encoder in Python, breaking down its main components. Then, we will visualize how Transformers process and adapt input data during training.</p>
+<p>While this blog doesn’t cover every architectural detail, it provides an implementation and an overall understanding of the transformative power of Transformers. For an in-depth explanation of Transformers, I suggest you look at the excellent Stanford CS224-n course.</p>
+<p>I also recommend following the <a href="https://github.com/maxime7770/Transformers-Insights">GitHub repository</a> associated with this article for additional details. 😊</p>
+<h3>What is a Transformer encoder architecture?</h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/982/1*ittgNWKSm6uejPpyGu2SdQ.png" /><figcaption>The Transformer model from <a href="https://arxiv.org/pdf/1706.03762.pdf">Attention Is All You Need</a></figcaption></figure>
+<p>This picture shows the original Transformer architecture, combining an encoder and a decoder for sequence-to-sequence language tasks.</p>
+<p>In this article, we will focus on the encoder architecture (the red block on the picture). This is what the popular BERT model is using under the hood: the primary focus is on <strong>understanding and representing the data</strong>, rather than generating sequences. It can be used for a variety of applications: text classification, named-entity recognition (NER), extractive question answering, etc.</p>
+<p>So, how is the data actually transformed by this architecture? We will explain each component in detail, but here is an overview of the process.</p>
+<ul><li>The input text is <strong>tokenized</strong>: the Python string is transformed into a list of tokens (numbers)</li><li>Each token is passed through an <strong>Embedding layer</strong> that outputs a vector representation for each token</li><li>The embeddings are then further encoded with a <strong>Positional Encoding layer</strong>, adding information about the position of each token in the sequence</li><li>These new embeddings are transformed by a series of <strong>Encoder Layers</strong>, using a self-attention mechanism</li><li>A <strong>task-specific head</strong> can be added. For example, we will later use a classification head to classify movie reviews as positive or negative</li></ul>
+<p>That is important to understand that the Transformer architecture transforms the embedding vectors by mapping them from one representation in a high-dimensional space to another within the same space, applying a series of complex transformations.</p>
+<h3>Implementing an encoder architecture in Python</h3>
+<h4>The Positional Encoder layer</h4>
+<p>Unlike RNN models, the attention mechanism makes no use of the order of the input sequence. The PositionalEncoder class adds positional encodings to the input embeddings, using two mathematical functions: cosine and sine.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/576/1*971n-dZ3KwprUN0GKG-_dg.png" /><figcaption>Positional encoding matrix definition from <a href="https://arxiv.org/pdf/1706.03762.pdf">Attention Is All You Need</a></figcaption></figure>
+<p>Note that positional encodings don’t contain trainable parameters: there are the results of deterministic computations, which makes this method very tractable. Also, sine and cosine functions take values between -1 and 1 and have useful periodicity properties to help the model learn patterns about the <strong>relative positions of words</strong>.</p>
+<pre>class PositionalEncoder(nn.Module):<br />    def __init__(self, d_model, max_length):<br />        super(PositionalEncoder, self).__init__()<br />        self.d_model = d_model<br />        self.max_length = max_length<br />        <br />        # Initialize the positional encoding matrix<br />        pe = torch.zeros(max_length, d_model)<br /><br />        position = torch.arange(0, max_length, dtype=torch.float).unsqueeze(1)<br />        div_term = torch.exp(torch.arange(0, d_model, 2, dtype=torch.float) * -(math.log(10000.0) / d_model))<br />        <br />        # Calculate and assign position encodings to the matrix<br />        pe[:, 0::2] = torch.sin(position * div_term)<br />        pe[:, 1::2] = torch.cos(position * div_term)<br />        self.pe = pe.unsqueeze(0)<br />    <br />    def forward(self, x):<br />        x = x + self.pe[:, :x.size(1)] # update embeddings<br />        return x</pre>
+<h4>Multi-Head Self-Attention</h4>
+<p>The self-attention mechanism is the key component of the encoder architecture. Let’s ignore the “multi-head” for now. Attention is a way to determine for each token (i.e. each embedding) the <strong>relevance of all other embeddings to that token</strong>, to obtain a more refined and contextually relevant encoding.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/609/1*FtvndpgqfD0GHd1ocOlxTA.jpeg" /><figcaption>How does“it” pay attention to other words of the sequence? (<a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a>)</figcaption></figure>
+<p>There are 3 steps in the self-attention mechanism.</p>
+<ul><li>Use matrices Q, K, and V to respectively transform the inputs “<strong>query</strong>”, “<strong>key</strong>” and “<strong>value</strong>”. Note that for self-attention, query, key, and values are all equal to our input embedding</li><li>Compute the attention score using cosine similarity (a dot product) between the <strong>query</strong> and the <strong>key</strong>. Scores are scaled by the square root of the embedding dimension to stabilize the gradients during training</li><li>Use a softmax layer to make these scores <strong>probabilities</strong></li><li>The output is the weighted average of the <strong>values</strong>, using the attention scores as the weights</li></ul>
+<p>Mathematically, this corresponds to the following formula.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*epJS1mkxjNqAUS0rjJhkAQ.png" /><figcaption>The Attention Mechanism from <a href="https://arxiv.org/pdf/1706.03762.pdf">Attention Is All You Need</a></figcaption></figure>
+<p>What does “multi-head” mean? Basically, we can apply the described self-attention mechanism process several times, in parallel, and concatenate and project the outputs. This allows each head to f<strong>ocus on different semantic aspects of the sentence</strong>.</p>
+<p>We start by defining the number of heads, the dimension of the embeddings (d_model), and the dimension of each head (head_dim). We also initialize the Q, K, and V matrices (linear layers), and the final projection layer.</p>
+<pre>class MultiHeadAttention(nn.Module):<br />    def __init__(self, d_model, num_heads):<br />        super(MultiHeadAttention, self).__init__()<br />        self.num_heads = num_heads<br />        self.d_model = d_model<br />        self.head_dim = d_model // num_heads<br /><br />        self.query_linear = nn.Linear(d_model, d_model)<br />        self.key_linear = nn.Linear(d_model, d_model)<br />        self.value_linear = nn.Linear(d_model, d_model)      <br />        self.output_linear = nn.Linear(d_model, d_model)</pre>
+<p>When using multi-head attention, we apply each attention head with a reduced dimension (head_dim instead of d_model) as in the original paper, making the total computational cost similar to a one-head attention layer with full dimensionality. Note this is a logical split only. What makes multi-attention so powerful is it can still be represented via a single matrix operation, making computations very efficient on GPUs.</p>
+<pre>def split_heads(self, x, batch_size):<br />        # Split the sequence embeddings in x across the attention heads<br />        x = x.view(batch_size, -1, self.num_heads, self.head_dim)<br />        return x.permute(0, 2, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.head_dim)</pre>
+<p>We compute the attention scores and use a mask to avoid using attention on padded tokens. We apply a softmax activation to make these scores probabilities.</p>
+<pre>def compute_attention(self, query, key, mask=None):<br />      # Compute dot-product attention scores<br />      # dimensions of query and key are (batch_size * num_heads, seq_length, head_dim)<br />      scores = query @ key.transpose(-2, -1) / math.sqrt(self.head_dim)<br />      # Now, dimensions of scores is (batch_size * num_heads, seq_length, seq_length)<br />      if mask is not None:<br />          scores = scores.view(-1, scores.shape[0] // self.num_heads, mask.shape[1], mask.shape[2]) # for compatibility<br />          scores = scores.masked_fill(mask == 0, float(&#39;-1e20&#39;)) # mask to avoid attention on padding tokens<br />          scores = scores.view(-1, mask.shape[1], mask.shape[2]) # reshape back to original shape<br />      # Normalize attention scores into attention weights<br />      attention_weights = F.softmax(scores, dim=-1)<br /><br />      return attention_weights</pre>
+<p>The forward attribute performs the multi-head logical split and computes the attention weights. Then, we get the output by multiplying these weights by the values. Finally, we reshape the output and project it with a linear layer.</p>
+<pre>def forward(self, query, key, value, mask=None):<br />      batch_size = query.size(0)<br /><br />      query = self.split_heads(self.query_linear(query), batch_size)<br />      key = self.split_heads(self.key_linear(key), batch_size)<br />      value = self.split_heads(self.value_linear(value), batch_size)<br /><br />      attention_weights = self.compute_attention(query, key, mask)<br />          <br />      # Multiply attention weights by values, concatenate and linearly project outputs<br />      output = torch.matmul(attention_weights, value)<br />      output = output.view(batch_size, self.num_heads, -1, self.head_dim).permute(0, 2, 1, 3).contiguous().view(batch_size, -1, self.d_model)<br />      return self.output_linear(output)</pre>
+<h4>The Encoder Layer</h4>
+<p>This is the main component of the architecture, which leverages multi-head self-attention. We first implement a simple class to perform a feed-forward operation through 2 dense layers.</p>
+<pre>class FeedForwardSubLayer(nn.Module):<br />    def __init__(self, d_model, d_ff):<br />        super(FeedForwardSubLayer, self).__init__()<br />        self.fc1 = nn.Linear(d_model, d_ff)<br />        self.fc2 = nn.Linear(d_ff, d_model)<br />        self.relu = nn.ReLU()<br /><br />    def forward(self, x):<br />        return self.fc2(self.relu(self.fc1(x)))</pre>
+<p>We can now code the logic for the encoder layer. We start by applying self-attention to the input, which gives a vector of the same dimension. We then use our mini feed-forward network with Layer Norm layers. Note that we also use skip connections before applying normalization.</p>
+<pre>class EncoderLayer(nn.Module):<br />    def __init__(self, d_model, num_heads, d_ff, dropout):<br />        super(EncoderLayer, self).__init__()<br />        self.self_attn = MultiHeadAttention(d_model, num_heads)<br />        self.feed_forward = FeedForwardSubLayer(d_model, d_ff)<br />        self.norm1 = nn.LayerNorm(d_model)<br />        self.norm2 = nn.LayerNorm(d_model)<br />        self.dropout = nn.Dropout(dropout)<br /><br />    def forward(self, x, mask):<br />        attn_output = self.self_attn(x, x, x, mask)<br />        x = self.norm1(x + self.dropout(attn_output)) # skip connection and normalization<br />        ff_output = self.feed_forward(x)<br />        return self.norm2(x + self.dropout(ff_output)) # skip connection and normalization</pre>
+<h4>Putting Everything Together</h4>
+<p>It’s time to create our final model. We pass our data through an embedding layer. This transforms our raw tokens (integers) into a numerical vector. We then apply our positional encoder and several (num_layers) encoder layers.</p>
+<pre>class TransformerEncoder(nn.Module):<br />    def __init__(self, vocab_size, d_model, num_layers, num_heads, d_ff, dropout, max_sequence_length):<br />        super(TransformerEncoder, self).__init__()<br />        self.embedding = nn.Embedding(vocab_size, d_model)<br />        self.positional_encoding = PositionalEncoder(d_model, max_sequence_length)<br />        self.layers = nn.ModuleList([EncoderLayer(d_model, num_heads, d_ff, dropout) for _ in range(num_layers)])<br />    <br />    def forward(self, x, mask):<br />        x = self.embedding(x)<br />        x = self.positional_encoding(x)<br />        for layer in self.layers:<br />            x = layer(x, mask)<br />        return x</pre>
+<p>We also create a ClassifierHead class which is used to transform the final embedding into class probabilities for our classification task.</p>
+<pre>class ClassifierHead(nn.Module):<br />    def __init__(self, d_model, num_classes):<br />        super(ClassifierHead, self).__init__()<br />        self.fc = nn.Linear(d_model, num_classes)<br /><br />    def forward(self, x):<br />        logits = self.fc(x[:, 0, :]) # first token corresponds to the classification token<br />        return F.softmax(logits, dim=-1)</pre>
+<p>Note that the dense and softmax layers are only applied on the first embedding (corresponding to the first token of our input sequence). This is because when tokenizing the text, the first token is the [CLS] token which stands for “classification.” The [CLS] token is designed to aggregate the entire sequence’s information into a single embedding vector, serving as a summary representation that can be used for classification tasks.</p>
+<p>Note: the concept of including a [CLS] token originates from BERT, which was initially trained on tasks like next-sentence prediction. The [CLS] token was inserted to predict the likelihood that sentence B follows sentence A, with a [SEP] token separating the 2 sentences. For our model, the [SEP] token simply marks the end of the input sentence, as shown below.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/354/1*t4iX4ZPWJmnj42AIlTpvoA.png" /><figcaption>[CLS] Token in BERT Architecture (<a href="https://seunghan96.github.io/dl/nlp/28.-nlp-BERT-%EC%9D%B4%EB%A1%A0/">All About AI</a>)</figcaption></figure>
+<p>When you think about it, it’s really mind-blowing that this single [CLS] embedding is able to capture so much information about the entire sequence, thanks to the self-attention mechanism’s ability to weigh and synthesize the importance of every piece of the text in relation to each other.</p>
+<h3>Training and visualization</h3>
+<p>Hopefully, the previous section gives you a better understanding of how our Transformer model transforms the input data. We will now write our training pipeline for our binary classification task using the IMDB dataset (movie reviews). Then, we will visualize the embedding of the [CLS] token during the training process to see how our model transformed it.</p>
+<p>We first define our hyperparameters, as well as a BERT tokenizer. In the GitHub repository, you can see that I also coded a function to select a subset of the dataset with only 1200 train and 200 test examples.</p>
+<pre>num_classes = 2 # binary classification<br />d_model = 256 # dimension of the embedding vectors<br />num_heads = 4 # number of heads for self-attention<br />num_layers = 4 # number of encoder layers<br />d_ff = 512. # dimension of the dense layers in the encoder layers<br />sequence_length = 256 # maximum sequence length <br />dropout = 0.4 # dropout to avoid overfitting<br />num_epochs = 20<br />batch_size = 32<br /><br />loss_function = torch.nn.CrossEntropyLoss()<br /><br />dataset = load_dataset(&quot;imdb&quot;)<br />dataset = balance_and_create_dataset(dataset, 1200, 200) # check GitHub repo<br /><br />tokenizer = AutoTokenizer.from_pretrained(&#39;bert-base-uncased&#39;, model_max_length=sequence_length)</pre>
+<p>You can try to use the BERT tokenizer on one of the sentences:</p>
+<pre>print(tokenized_datasets[&#39;train&#39;][&#39;input_ids&#39;][0])</pre>
+<p>Every sequence should start with the token 101, corresponding to [CLS], followed by some non-zero integers and padded with zeros if the sequence length is smaller than 256. Note that these zeros are ignored during the self-attention computation using our “mask”.</p>
+<pre>tokenized_datasets = dataset.map(encode_examples, batched=True)<br />tokenized_datasets.set_format(type=&#39;torch&#39;, columns=[&#39;input_ids&#39;, &#39;attention_mask&#39;, &#39;label&#39;])<br /><br />train_dataloader = DataLoader(tokenized_datasets[&#39;train&#39;], batch_size=batch_size, shuffle=True)<br />test_dataloader = DataLoader(tokenized_datasets[&#39;test&#39;], batch_size=batch_size, shuffle=True)<br /><br />vocab_size = tokenizer.vocab_size<br /><br />encoder = TransformerEncoder(vocab_size, d_model, num_layers, num_heads, d_ff, dropout, max_sequence_length=sequence_length)<br />classifier = ClassifierHead(d_model, num_classes)<br /><br />optimizer = torch.optim.Adam(list(encoder.parameters()) + list(classifier.parameters()), lr=1e-4)</pre>
+<p>We can now write our train function:</p>
+<pre>def train(dataloader, encoder, classifier, optimizer, loss_function, num_epochs):<br />    for epoch in range(num_epochs):        <br />        # Collect and store embeddings before each epoch starts for visualization purposes (check repo)<br />        all_embeddings, all_labels = collect_embeddings(encoder, dataloader)<br />        reduced_embeddings = visualize_embeddings(all_embeddings, all_labels, epoch, show=False)<br />        dic_embeddings[epoch] = [reduced_embeddings, all_labels]<br />        <br />        encoder.train()<br />        classifier.train()<br />        correct_predictions = 0<br />        total_predictions = 0<br />        for batch in tqdm(dataloader, desc=&quot;Training&quot;):<br />            input_ids = batch[&#39;input_ids&#39;]<br />            attention_mask = batch[&#39;attention_mask&#39;] # indicate where padded tokens are<br />            # These 2 lines make the attention_mask a matrix instead of a vector<br />            attention_mask = attention_mask.unsqueeze(-1)<br />            attention_mask = attention_mask &amp; attention_mask.transpose(1, 2) <br />            labels = batch[&#39;label&#39;]<br />            optimizer.zero_grad()<br />            output = encoder(input_ids, attention_mask)<br />            classification = classifier(output)<br />            loss = loss_function(classification, labels)<br />            loss.backward()<br />            optimizer.step()<br />            preds = torch.argmax(classification, dim=1)<br />            correct_predictions += torch.sum(preds == labels).item()<br />            total_predictions += labels.size(0)<br />        <br />        epoch_accuracy = correct_predictions / total_predictions<br />        print(f&#39;Epoch {epoch} Training Accuracy: {epoch_accuracy:.4f}&#39;)</pre>
+<p>You can find the collect_embeddings and visualize_embeddings functions in the GitHub repo. They store the [CLS] token embedding for each sentence of the training set, apply a dimensionality reduction technique called t-SNE to make them 2D vectors (instead of 256-dimensional vectors), and save an animated plot.</p>
+<p>Let’s visualize the results.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*K3bwH03hjtra_QQyY5vYGg.gif" /><figcaption>Projected [CLS] embeddings for each training point (blue corresponds to positive sentences, red corresponds to negative sentences)</figcaption></figure>
+<p>Observing the plot of projected [CLS] embeddings for each training point, we can see the clear distinction between positive (blue) and negative (red) sentences after a few epochs. This visual shows the remarkable capability of the Transformer architecture to adapt embeddings over time and highlights the power of the self-attention mechanism. The data is transformed in such a way that embeddings for each class are well separated, thereby significantly simplifying the task for the classifier head.</p>
+<h3>Conclusion</h3>
+<p>As we conclude our exploration of the Transformer architecture, it’s evident that these models are adept at tailoring data to a given task. With the use of positional encoding and multi-head self-attention, Transformers go beyond mere data processing: they interpret and understand information with a level of sophistication previously unseen. The ability to dynamically weigh the relevance of different parts of the input data allows for a more nuanced understanding and representation of the input text. This enhances performance across a wide array of downstream tasks, including text classification, question answering, named entity recognition, and more.</p>
+<p>Now that you have a better understanding of the encoder architecture, you are ready to delve into decoder and encoder-decoder models, which are very similar to what we have just explored. Decoders play a pivotal role in generative tasks and are at the core of the popular GPT models.</p>
+<ul><li>Feel free to connect on <a href="https://www.linkedin.com/in/maxime-wolf/">LinkedIn</a></li><li>Follow me on <a href="https://github.com/maxime7770">GitHub</a> for more content</li><li>Visit my website: <a href="http://maximewolf.com">maximewolf.com</a></li></ul>
+<p><strong>References</strong></p>
+<p>[1] Vaswani, Ashish, et al. “Attention Is All You Need.” <em>31st Conference on Neural Information Processing Systems (NIPS 2017)</em>, Long Beach, CA, USA.</p>
+<p>[2] “The Illustrated Transformer.” <em>Jay Alammar’s Blog</em>, June 2018, <a href="http://jalammar.github.io/illustrated-transformer/">http://jalammar.github.io/illustrated-transformer/</a></p>
+<p>[3] Official PyTorch Implementation of the Transformer Architecture. <em>GitHub repository</em>, PyTorch, <a href="https://github.com/pytorch/pytorch/blob/master/torch/nn/modules/transformer.py">https://github.com/pytorch/pytorch/blob/master/torch/nn/modules/transformer.py</a></p>
+<p>[4] Manning, Christopher, et al. “CS224n: Natural Language Processing with Deep Learning.” <em>Stanford University</em>, Stanford CS224N NLP course, <a href="http://web.stanford.edu/class/cs224n/">http://web.stanford.edu/class/cs224n/</a></p>
+<p><img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=72d69e383e0d" width="1" height="1" alt="" />&lt;hr&gt;&lt;p&gt;<a href="https://medium.com/data-science/transformers-how-do-they-transform-your-data-72d69e383e0d">Transformers: How Do They Transform Your Data?</a> was originally published in <a href="https://medium.com/data-science">TDS Archive</a> on Medium, where people are continuing the conversation by highlighting and responding to this story.&lt;/p&gt;</p>]]></content><author><name></name></author></entry><entry><title type="html">Building Your Own ChatBot: A Step-by-Step Guide</title><link href="https://www.maximewolf.com//blog/2023/building-your-own-chatbot-a-step-by-step-guide/" rel="alternate" type="text/html" title="Building Your Own ChatBot: A Step-by-Step Guide" /><published>2023-04-10T19:10:23+00:00</published><updated>2023-04-10T19:10:23+00:00</updated><id>https://www.maximewolf.com//blog/2023/building-your-own-chatbot-a-step-by-step-guide</id><content type="html" xml:base="https://www.maximewolf.com//blog/2023/building-your-own-chatbot-a-step-by-step-guide/"><![CDATA[<h4>Learn how to build and train an LLM efficiently on your laptop</h4>
+<p>ChatGPT is an incredibly powerful tool for generating human-like responses to natural language queries. It uses a state-of-the-art AI language model, GPT, to understand and respond to text inputs in a conversational manner. However, one drawback of using ChatGPT is that it is not an open-source tool. This can cause some concern if you worry about your data being leaked.</p>
+<p>Fortunately, it is possible to build your own local “ChatGPT”! In this step-by-step guide, I will show you how to do so, by finetuning an open-source model and using public data.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/740/1*AU_vMHBkfGTIKJhEKW984A.png" /><figcaption>Image by BotUp</figcaption></figure>
+<h3>LLaMA: an LLM waiting for you!</h3>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/788/1*d-4x5C8Oy6LdVkdipJ0bkg.png" /><figcaption>Image by the author</figcaption></figure>
+<p>LLama has been recently introduced by Meta. It is a large language model and it exists in different versions, depending on the number of parameters of the model: 7B, 13B, 33B, and 65B parameters. We will use the first version (<strong>7 billion parameters</strong>). It is more than enough to get very good results. With some additional tricks, you will see that you can easily fit this into your computer, or into Google Colab!</p>
+<p><strong>What exactly is LLaMA?</strong></p>
+<p>To make it simple, it has been trained by Meta to predict, when some text is given as input, what comes next. The idea is to finetune this model so that it can provide an <em>answer </em>to some <em>instructions and inputs.</em></p>
+<p><strong>How can you have access to LLaMa?</strong></p>
+<p>Well, the model was not designed to be open-source! But it turns out that it has leaked and you can now find it pretty much everywhere. For example, you can find it on huggingface, right <a href="https://huggingface.co/decapoda-research/llama-7b-hf">here</a>.</p>
+<p>Great! Now let’s explain the tools we will use to optimize the finetuning of this large model.</p>
+<h3>LoRA and quantization</h3>
+<p>LoRA is the key to building your own ChatGPT-like model! LoRA stands for Low-Rank Approximation. Okay… you might wonder what that means.</p>
+<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*Ir4445O1wMmlCOYRONgsmA.png" /><figcaption>Low-rank approximation with rank=k</figcaption></figure>
+<p>During finetuning, weights are updated. The idea is to approximate the weights matrix M by eliminating some parameters. Well, we could remove random parameters, right? Absolutely, it is a good first step. But <strong>LoRA</strong> is doing more than that. Intuitively, the goal is to <strong>select the most important parameters</strong>! The low-rank approximation matrix is a simplified version of the original matrix that captures the most important information while discarding some of the less important details. If you are familiar with linear algebra, this is nothing but keeping the largest singular values of the matrix in its SVD. By doing this, we can drastically <strong>reduce the number of parameters and speed up the finetuning and inference process</strong>!</p>
+<p>Finally, we can use <strong>int8 quantization</strong>. That means reducing the precision of a neural network’s parameters from 32-bit floating-point numbers (FP32) to 8-bit integers.</p>
+<p>We can then combine both <strong>LoRA and quantization</strong> to further optimize memory usage and speed up finetuning and inference. These two steps are fundamental.</p>
+<h3>Let’s dive into the code!</h3>
+<p>We are ready to start coding our own ChatBot. To finetune the LLaMA model, we’ll use <strong>52K samples of data</strong>, which you can find right <a href="https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json">here</a>. It contains instructions, input (optional), and output (I recommend you check the file to see what it looks like). Of course, you can choose whatever file you want, depending on your needs!</p>
+<p>First, let’s install everything we need, you can install this <strong>locally</strong> in a new environment, or in google colab. I personally did it in<strong> Google Colab</strong> but it’s exactly the same locally! To do so, instead of cloning the <em>alpaca-lora </em>repository like below, you can directly download the <em>alpaca_data.json</em> and drop it into your local repository.</p>
+<p><em>Note: if you use Google Colab, don’t forget to </em><strong><em>use the provided GPU</em></strong><em>!</em></p>
+<pre>git clone https://github.com/tloen/alpaca-lora.git<br />%cd alpaca-lora/<br /><br />!pip install -q datasets loralib sentencepiece<br />!pip uninstall transformers<br />!pip install -q git+https://github.com/zphang/transformers@c3dc391<br />!pip install -q git+https://github.com/huggingface/peft.git<br />!pip install snscrape</pre>
+<p>Let’s import the packages we need:</p>
+<pre>import os<br />import torch<br />import torch.nn as nn<br />import bitsandbytes as bnb<br />from datasets import load_dataset<br />import transformers<br />from transformers import AutoTokenizer, AutoConfig, LLaMAForCausalLM, LLaMATokenizer<br />from peft import prepare_model_for_int8_training, LoraConfig, get_peft_model, PeftModel</pre>
+<p>We can now define our <strong>hyperparameters</strong> (you can of course adapt these)<strong> </strong>and <strong>load the LLaMA model</strong>. Then, we define the configuration for the LoRA transformation, using the PEFT library.</p>
+<pre>MICRO_BATCH_SIZE = 8<br />BATCH_SIZE = 128<br />GRADIENT_ACCUMULATION_STEPS = BATCH_SIZE // MICRO_BATCH_SIZE<br />EPOCHS = 3 #<br />LEARNING_RATE = 2e-5 <br />CUTOFF_LEN = 256<br />LORA_R = 4  # the number of singular values to keep for LoRA<br />LORA_ALPHA = 16<br />LORA_DROPOUT = 0.05</pre>
+<pre>model = LLaMAForCausalLM.from_pretrained(<br />    &quot;decapoda-research/llama-7b-hf&quot;,<br />    load_in_8bit=True,<br />    device_map=&quot;auto&quot;,<br />)<br />tokenizer = LLaMATokenizer.from_pretrained(<br />    &quot;decapoda-research/llama-7b-hf&quot;, add_eos_token=True<br />)<br /><br />model = prepare_model_for_int8_training(model)<br /><br />config = LoraConfig(<br />    r=LORA_R,<br />    lora_alpha=LORA_ALPHA,<br />    target_modules=[&quot;q_proj&quot;, &quot;v_proj&quot;],<br />    lora_dropout=LORA_DROPOUT,<br />    bias=&quot;none&quot;,<br />    task_type=&quot;CAUSAL_LM&quot;,<br />)<br />model = get_peft_model(model, config)<br />tokenizer.pad_token_id = 0  # unk. we want this to be different from the eos token<br />data = load_dataset(&quot;json&quot;, data_files=&quot;alpaca_data.json&quot;)</pre>
+<p>Great! Now, let’s <strong>load the data</strong> and<strong> finetune our model</strong>. The <em>generate_prompt</em> function processes every sample of the dataset we have in order to return a single text as a string. You can adapt this function depending on the data you want to use to finetune the model.</p>
+<pre><br />def generate_prompt(data_point):<br />    if data_point[&quot;input&quot;]:<br />        return f&quot;&quot;&quot;Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.<br />  ### Instruction:<br />  {data_point[&quot;instruction&quot;]}<br />  ### Input:<br />  {data_point[&quot;input&quot;]}<br />  ### Response:<br />  {data_point[&quot;output&quot;]}&quot;&quot;&quot;<br /><br />    else:<br />        return f&quot;&quot;&quot;Below is an instruction that describes a task. Write a response that appropriately completes the request.<br />### Instruction:<br />{data_point[&quot;instruction&quot;]}<br />### Response:<br />{data_point[&quot;output&quot;]}&quot;&quot;&quot;<br /><br /><br />data = data.shuffle().map(<br />    lambda data_point: tokenizer(<br />        generate_prompt(data_point),<br />        truncation=True,<br />        max_length=CUTOFF_LEN,<br />        padding=&quot;max_length&quot;,<br />    )<br />)<br /><br />trainer = transformers.Trainer(<br />    model=model,<br />    train_dataset=data[&quot;train&quot;],<br />    args=transformers.TrainingArguments(<br />        per_device_train_batch_size=MICRO_BATCH_SIZE,<br />        gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,<br />        warmup_steps=100,<br />        num_train_epochs=EPOCHS,<br />        learning_rate=LEARNING_RATE,<br />        fp16=True,<br />        logging_steps=1,<br />        output_dir=&quot;your_directory&quot;,<br />        save_total_limit=3,<br />    ),<br />    data_collator=transformers.DataCollatorForLanguageModeling(tokenizer, mlm=False),<br />)<br />model.config.use_cache = False<br />trainer.train(resume_from_checkpoint=False)<br /><br />model.save_pretrained(&quot;your_directory&quot;)</pre>
+<p>The training might take some time. With Google Colab Pro, it took approximately 3 hours for 2 epochs. It can seem very long but we don’t need too many epochs. We already have <strong>very good results with 2 or 3 epochs</strong> as you will see!</p>
+<p><em>Note: you can push the model on your huggingface hub to load it whenever you need.</em></p>
+<pre>from huggingface_hub import notebook_login<br /><br />notebook_login()<br />model.push_to_hub(&quot;your_username/your_model_name&quot;, use_auth_token=True)<br />model.save_pretrained(&quot;your_username/your_model_name&quot;, use_auth_token=True)</pre>
+<p>Then, you can directly load your model with:</p>
+<pre>tokenizer = LLaMATokenizer.from_pretrained(&quot;decapoda-research/llama-7b-hf&quot;)<br />model = LLaMAForCausalLM.from_pretrained(<br />    &quot;decapoda-research/llama-7b-hf&quot;,<br />    load_in_8bit=True,<br />    device_map=&quot;auto&quot;,<br />)<br />model = PeftModel.from_pretrained(model, &quot;your_username/your_model_name&quot;)</pre>
+<p>Let’s try our new model. The inference function takes as input an instruction and the optional input.</p>
+<pre>def inference(instruction_prompt, input_prompt=&#39;&#39;):<br /><br />if input_prompt:<br />    template = f&#39;&#39;&#39;Below is an instruction that describes a task. Write a response that appropriately completes the request.<br /><br />  ### Instruction:<br />  {instruction_prompt}<br /><br />  ### Input:<br />  {input_prompt}<br /><br />  ### Response:<br />  &#39;&#39;&#39;<br /><br />  else:<br />    template = f&#39;&#39;&#39;Below is an instruction that describes a task. Write a response that appropriately completes the request.<br /><br />  ### Instruction:<br />  {instruction_prompt}<br /><br />  ### Response:<br />  &#39;&#39;&#39;<br /><br />  inputs = tokenizer(<br />    template,<br />    return_tensors=&quot;pt&quot;,<br />  )<br />  input_ids = inputs[&quot;input_ids&quot;].cuda()<br /><br />  generation_config = GenerationConfig(<br />      temperature=0.6,<br />      top_p=0.95,<br />      repetition_penalty=1.15,<br />  )<br />  print(&quot;Generating...&quot;)<br />  generation_output = model.generate(<br />      input_ids=input_ids,<br />      generation_config=generation_config,<br />      return_dict_in_generate=True,<br />      output_scores=True,<br />      max_new_tokens=128,<br />  )<br /><br />  result = &#39;&#39;.join([tokenizer.decode(s) for s in generation_output.sequences])<br />  result = result.partition(&#39;### Response:\n   &#39;)[2]<br /><br />  return result</pre>
+<p>Good, we are done! Let’s try this out. Here are some examples of results I got, training with only 2 epochs:</p>
+<pre>inference(&#39;Write a long story about a flying cat&#39;)</pre>
+<pre>The sky was dark and ominous as the wind howled through the trees, sending <br />them swaying back and forth in its wake. A small black kitten sat on top of <br />one of the branches, watching the storm with wide eyes. It had been raining <br />for days now, and the little feline was getting tired of being cooped up <br />inside all day. As it watched the rain pour down from above, it suddenly felt <br />inspired to take flight! With a mighty leap, the kitten soared into the air, <br />letting the wind carry it higher and higher until it reached the clouds.</pre>
+<pre>inference(&#39;Extract cities as a list from this sentence: &#39;, &#39;As a student studying abroad, I flew from New York City to Paris, where I spent a week before taking a train to Barcelona for a few days, and then continued my journey to Rome.&#39;)</pre>
+<pre>[New York City, Paris, Barcelona, Rome]</pre>
+<p>As you can see, we have very satisfying results!</p>
+<h3>Conclusion</h3>
+<p>By using an open-source model available on huggingface, some data, and a few optimization techniques, we successfully built our own ChatGPT-like model! Isn’t this crazy?</p>
+<p>As you can imagine, there are plenty of potential applications. Also, keep in mind that there are more and more open-source LLMs. You can certainly find an alternative to LLaMA to build your own chatbot!</p>
+<p>As a next step, you could try to integrate this into a streamlit application so that you can directly interact and chat with your model.</p>
+<p>Congrats! You reached the end of this article. I hope you enjoyed reading it. Feel free to leave a comment and reach out!</p>
+<p><strong>References</strong></p>
+<p>[1] Meta AI, <a href="https://ai.facebook.com/blog/large-language-model-llama-meta-ai/">Introducing LLaMA: A foundational, 65-billion-parameter large language model</a> February 24, 2023</p>
+<p>[2] Edward J. Hu, Yelong Shen, Phillip Willis, and al., <a href="https://arxiv.org/abs/2106.09685">LoRA: Low-Rank Adaptation of Large Language Models</a></p>
+<p>[3] code_your_own_ai, <a href="https://www.youtube.com/watch?v=YVU5wAA6Txo">PEFT LoRA Explained in Detail — Fine-Tune your LLM on your local GPU</a></p>
+<p>[4] Martin Thissen, <a href="https://medium.com/@martin-thissen/llama-alpaca-fine-tuning-code-generation-ram-requirements-and-more-answers-to-your-questions-b7e20b28e9e1">Alpaca &amp; LLaMA: Answering All Your Questions</a></p>
+<p>[5] Rohan Taori, Ishaan Gulrajani, Tianyi Zang, and al., <a href="https://crfm.stanford.edu/2023/03/13/alpaca.html">Alpaca: A Strong, Replicable Instruction-Following Model</a></p>
+<p><img src="https://medium.com/_/stat?event=post.clientViewed&amp;referrerSource=full_rss&amp;postId=51541237062" width="1" height="1" alt="" /></p>]]></content><author><name></name></author></entry></feed>
