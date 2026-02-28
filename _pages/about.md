@@ -15,7 +15,7 @@ profile:
 social: true  # includes social icons at the bottom of the page
 ---
 
-Hello! :wave: I’m Maxime, a Machine Learning Engineer at PayPal. My work focuses on building and deploying machine learning models, particularly in recommendation systems and personalization.
+Hello! :wave: I’m Maxime, a Data Scientist at Waymo. My work focuses on building and deploying optimization and machine learning models.
 
 I studied Data Science at MIT, where I worked on various projects at the intersection of optimization and machine learning. Previously, I collaborated with the MIT Operations Research Center and IBM, contributing to research at the intersection of Machine Learning and Optimization.
 

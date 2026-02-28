@@ -6,15 +6,17 @@ body {
   padding-bottom: 70px;
   color: var(--global-text-color);
   background-color: var(--global-bg-color);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 
   h1, h2, h3, h4, h5, h6 {
-    scroll-margin-top: 66px;
+    scroll-margin-top: 84px;
   }
 }
 
 body.fixed-top-nav {
-  // Add some padding for the nav-bar.
-  padding-top: 56px;
+  // Add padding for a taller minimalist nav-bar.
+  padding-top: 72px;
 }
 
 body.sticky-bottom-footer {
@@ -24,27 +26,61 @@ body.sticky-bottom-footer {
 
 .container {
   max-width: $max-content-width;
+  padding-left: 1.15rem;
+  padding-right: 1.15rem;
 }
 
-// Profile
+.container.mt-5 {
+  margin-top: 2.25rem !important;
+}
+
+.post,
+.cv,
+.publications,
+.projects {
+  position: relative;
+}
+
+.post {
+  font-size: 1.04rem;
+  line-height: 1.78;
+}
+
+.post .post-header {
+  margin-bottom: 1.5rem;
+}
+
+.post .post-title {
+  font-family: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+}
+
+.post .post-header .desc {
+  color: var(--global-text-color-light);
+  font-family: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+}
+
 .profile {
   img {
     width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
   }
 }
 
-// TODO: redefine content layout.
+@media (max-width: 768px) {
+  body.fixed-top-nav {
+    padding-top: 66px;
+  }
 
+  .container.mt-5 {
+    margin-top: 1.6rem !important;
+  }
 
-/******************************************************************************
- * Publications
- ******************************************************************************/
-
-// TODO: redefine publications layout.
-
-
-/*****************************************************************************
-* Projects
-*****************************************************************************/
-
-// TODO: redefine projects layout.
+  .post {
+    font-size: 1rem;
+  }
+}
