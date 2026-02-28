@@ -3,7 +3,7 @@
 
       <!-- Nav Bar -->
       <nav id="navbar" class="navbar navbar-light navbar-expand-sm {% if site.navbar_fixed %}fixed-top{% else %}sticky-top{% endif %}">
-        <div class="container">
+        <div class="container nav-shell">
           {% if page.permalink != '/' -%}
           <a class="navbar-brand title font-weight-lighter" href="{{ site.baseurl }}/">
             {%- if site.title == "blank" -%}
@@ -34,8 +34,8 @@
             <span class="icon-bar bottom-bar"></span>
           </button>
 
-          <div class="collapse navbar-collapse text-right" id="navbarNav">
-            <ul class="navbar-nav ml-auto flex-nowrap">
+          <div class="collapse navbar-collapse text-right nav-panel" id="navbarNav">
+            <ul class="navbar-nav ml-auto flex-nowrap nav-menu">
 
               {%- for page in site.pages -%}
                 {% if page.permalink == '/' %}
@@ -96,9 +96,9 @@
               {% endfor -%}
               {%- if site.enable_darkmode %}
 
-              <!-- Toogle theme mode -->
-              <li class="toggle-container">
-                <button id="light-toggle" title="Change theme">
+              <!-- Toggle theme mode -->
+              <li class="nav-item toggle-container">
+                <button id="light-toggle" class="theme-toggle" title="Change theme" aria-label="Toggle dark and light mode">
                   <i class="fas fa-moon"></i>
                   <i class="fas fa-sun"></i>
                 </button>

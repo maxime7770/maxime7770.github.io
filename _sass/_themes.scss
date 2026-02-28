@@ -3,27 +3,30 @@
  ******************************************************************************/
 
 :root {
-  --global-bg-color: #f7f8f7;
+  --global-bg-color: #f4f6f7;
   --global-code-bg-color: #{$code-bg-color-light};
-  --global-text-color: #1a2732;
-  --global-text-color-light: #5a6977;
-  --global-theme-color: #0f5f86;
-  --global-hover-color: #0a4765;
-  --global-footer-bg-color: #f7f8f7;
-  --global-footer-text-color: #5a6977;
-  --global-footer-link-color: #1a2732;
-  --global-distill-app-color: #5a6977;
-  --global-divider-color: rgba(20, 38, 54, 0.14);
+  --global-surface-color: #ffffff;
+  --global-surface-muted-color: #edf2f5;
+  --global-text-color: #1d2a35;
+  --global-heading-color: #152330;
+  --global-text-color-light: #607181;
+  --global-theme-color: #0e6ea1;
+  --global-hover-color: #084f75;
+  --global-footer-bg-color: #f4f6f7;
+  --global-footer-text-color: #607181;
+  --global-footer-link-color: #1d2a35;
+  --global-distill-app-color: #607181;
+  --global-divider-color: rgba(21, 36, 51, 0.13);
   --global-card-bg-color: #ffffff;
-  --global-nav-bg-color: rgba(247, 248, 247, 0.9);
+  --global-nav-bg-color: rgba(244, 246, 247, 0.86);
+  --global-shadow-color: rgba(15, 37, 58, 0.09);
+  --global-shadow-color-heavy: rgba(15, 37, 58, 0.15);
 
   .fa-sun {
     display: none;
   }
 
   .fa-moon {
-    padding-left: 10px;
-    padding-top: 12px;
     display: block;
   }
 
@@ -37,23 +40,26 @@
 }
 
 html[data-theme='dark'] {
-  --global-bg-color: #12181d;
+  --global-bg-color: #10161c;
   --global-code-bg-color: #{$code-bg-color-dark};
-  --global-text-color: #e8edf1;
-  --global-text-color-light: #9eb0be;
-  --global-theme-color: #74c0e4;
-  --global-hover-color: #95d7f3;
-  --global-footer-bg-color: #12181d;
-  --global-footer-text-color: #9eb0be;
-  --global-footer-link-color: #e8edf1;
-  --global-distill-app-color: #9eb0be;
-  --global-divider-color: rgba(210, 225, 238, 0.16);
-  --global-card-bg-color: #182128;
-  --global-nav-bg-color: rgba(18, 24, 29, 0.88);
+  --global-surface-color: #141e27;
+  --global-surface-muted-color: #1a2732;
+  --global-text-color: #e7eef3;
+  --global-heading-color: #f2f7fa;
+  --global-text-color-light: #9bb1c2;
+  --global-theme-color: #77c8eb;
+  --global-hover-color: #9edcf6;
+  --global-footer-bg-color: #10161c;
+  --global-footer-text-color: #9bb1c2;
+  --global-footer-link-color: #e7eef3;
+  --global-distill-app-color: #9bb1c2;
+  --global-divider-color: rgba(215, 231, 243, 0.15);
+  --global-card-bg-color: #152029;
+  --global-nav-bg-color: rgba(16, 22, 28, 0.86);
+  --global-shadow-color: rgba(2, 6, 10, 0.3);
+  --global-shadow-color-heavy: rgba(2, 6, 10, 0.45);
 
   .fa-sun {
-    padding-left: 10px;
-    padding-top: 12px;
     display: block;
   }
 
