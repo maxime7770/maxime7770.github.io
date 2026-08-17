@@ -24,13 +24,19 @@ pagination:
       {% for post in paginator.posts %}
       {% if post.external_source == blank %}{% assign read_time = post.content | number_of_words | divided_by: 180 | plus: 1 %}{% else %}{% assign read_time = post.feed_content | strip_html | number_of_words | divided_by: 180 | plus: 1 %}{% endif %}
       {% assign post_href = post.url | relative_url %}{% assign is_external = false %}
+      {% assign display_title = post.title | replace: ' | Towards Data Science', '' %}
       {% if post.redirect %}{% assign post_href = post.redirect %}{% if post.redirect contains '://' %}{% assign is_external = true %}{% endif %}{% endif %}
-      <article class="article-row{% if forloop.first %} article-row--lead{% endif %}">
+      <article class="article-row">
         <a href="{{ post_href }}"{% if is_external %} target="_blank" rel="noopener"{% endif %}>
-          <div class="article-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%B %-d, %Y' }}</time><span>{{ read_time }} min read</span>{% if post.external_source %}<span>{{ post.external_source }}</span>{% endif %}</div>
-          <h3>{{ post.title }} {% if is_external %}<span class="external-mark" aria-label="opens externally">↗</span>{% endif %}</h3>
-          {% if post.description %}<p>{{ post.description }}</p>{% endif %}
-          {% if post.categories %}<ul class="tag-list" aria-label="Article categories">{% for category in post.categories %}<li>{{ category }}</li>{% endfor %}</ul>{% endif %}
+          <div class="article-meta">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%B %-d, %Y' }}</time>
+            <span>{{ read_time }} min read</span>
+            {% if post.external_source %}<span>{{ post.external_source }}</span>{% elsif post.categories %}<span>{{ post.categories | first | remove: ',' }}</span>{% endif %}
+          </div>
+          <div class="article-summary">
+            <h3>{{ display_title }}</h3>
+            {% if post.description %}<p>{{ post.description }}</p>{% endif %}
+          </div>
           <span class="article-arrow" aria-hidden="true">{% if is_external %}↗{% else %}→{% endif %}</span>
         </a>
       </article>
