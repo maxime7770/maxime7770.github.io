@@ -1,10 +1,13 @@
 ---
-layout: page
+layout: project
 title: AI-Powered Email Assistant for CMA CGM
 description: We built CMA CGM's AI-powered email assistant that generates recommended replies for over 100k weekly customer emails.
 img: assets/img/project_cma_cgm_cover.png
 importance: 2
 category: MIT
+context: MIT Sloan · CMA CGM
+tags: [LLMs, NLP, RAG]
+featured: true
 ---
 
 This project was developed as part of the Analytics Lab course at MIT Sloan, and in collaboration with CMA CGM. The course is a 9-month long project-based course in which students work in teams of 5 to solve real-world business problems for companies. The course is sponsored by the MIT Initiative on the Digital Economy (IDE).
@@ -31,7 +34,7 @@ Project Mentor:
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/project_cma_cgm/summary_slide.png" title="summary slide" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/project_cma_cgm/summary_slide.png" alt="Summary of the AI-powered email assistant features and benefits" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
@@ -44,7 +47,7 @@ CMA CGM is the largest shipping company in the United States and handles more th
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/project_cma_cgm/problem_and_solution_slide.png" title="problem and solution slide" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/project_cma_cgm/problem_and_solution_slide.png" alt="CMA CGM email processing problem and proposed assistant solution" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
@@ -59,7 +62,7 @@ A full view of the integrated processing pipeline is shown below:
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/project_cma_cgm/processing_pipeline_slide.png" title="processing pipeline slide" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/project_cma_cgm/processing_pipeline_slide.png" alt="Integrated processing pipeline for classifying emails and generating recommended replies" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
@@ -72,7 +75,7 @@ We also built a user-friendly web interface that customer care agents can intera
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/project_cma_cgm/web_interface_slide.png" title="web interface slide" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/project_cma_cgm/web_interface_slide.png" alt="Web interface used by customer care agents to review recommended email replies" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
@@ -97,7 +100,7 @@ That’s why with full support from the CMA CGM team, we made a strategic pivot 
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/project_cma_cgm/impact_slide.png" title="impact slide" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/project_cma_cgm/impact_slide.png" alt="Quantitative and strategic impacts of the email assistant" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">

@@ -1,10 +1,13 @@
 ---
-layout: page
+layout: project
 title: Sherlock Picasso
 description: Marketing made easy. We built a product to help SMBs attract customers on social media.
 img: assets/img/project_google_pm_hackathon_cover.png
 importance: 1
 category: MIT
+context: Google × MIT Sloan
+tags: [Generative AI, Product, Marketing]
+featured: true
 ---
 
 This project was developed as part of the 2024 Google Product Management Hackathon at MIT.
@@ -22,7 +25,7 @@ Team Members:
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/project_google_pm_hackathon/summary.png" title="summary slide" class="img-fluid rounded z-depth-1" %}
+        {% include figure.html path="assets/img/project_google_pm_hackathon/summary.png" alt="Summary of Sherlock Picasso features and benefits" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">

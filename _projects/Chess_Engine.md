@@ -5,5 +5,6 @@ description: A chess engine, written in Python, including a GUI and an agent tha
 img: assets/img/project_chess_engine_cover.jpg
 importance: 4
 category: Personal projects
+tags: [Python, Game AI]
 redirect: https://github.com/maxime7770/Chess
 ---

@@ -1,10 +1,12 @@
 ---
-layout: page
+layout: project
 title: Uber Data Exploration
 description: Analyzing and visualizing the data from Uber drives in New York City.
 img: assets/img/project_uber_data_cover.png
 importance: 3
 category: MIT
+context: MIT Sloan
+tags: [Analytics, Data visualization]
 ---
 
 

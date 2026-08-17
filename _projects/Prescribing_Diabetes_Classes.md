@@ -5,5 +5,7 @@ description: We developed a tool to prescribe diabetes self-management classes t
 img: assets/img/project_machine_learning_cover.png
 importance: 4
 category: MIT
+context: MIT
+tags: [Optimal trees, Healthcare]
 redirect: https://github.com/maxime7770/Diabetes-Classes-Prescription
 ---

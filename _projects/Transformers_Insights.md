@@ -5,5 +5,6 @@ description: Exploring how Transformers actually transform the data under the ho
 img: assets/img/project_transformers_insights_cover.jpg
 importance: 1
 category: Personal projects
+tags: [Transformers, Machine learning]
 redirect: https://github.com/maxime7770/Transformers-Insights
 ---

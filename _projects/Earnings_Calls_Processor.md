@@ -5,5 +5,7 @@ description: Leveraging Machine Learning and NLP techniques to create a novel ea
 img: assets/img/project_earnings_calls_processor_cover.png
 importance: 4
 category: MIT
+context: MIT
+tags: [Machine learning, NLP]
 redirect: https://github.com/maxime7770/Earnings-Calls-Processor
 ---

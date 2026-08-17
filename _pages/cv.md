@@ -1,9 +1,11 @@
 ---
-layout: cv
-permalink: /assets/pdf/Resume_Wolf_Maxime.pdf
+layout: page
+permalink: /cv/
 title: CV
-nav: true
+description: View Maxime Wolf's CV as a PDF.
+nav: false
 nav_order: 3
 cv_pdf: Resume_Wolf_Maxime.pdf
-# redirect: <a href="https://maxime7770.github.io/assets/pdf/Resume_Wolf_Maxime.pdf" target="_blank">redirect</a>
 ---
+
+<p><a class="button button--primary" href="{{ '/assets/pdf/Resume_Wolf_Maxime.pdf' | relative_url }}" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a></p>

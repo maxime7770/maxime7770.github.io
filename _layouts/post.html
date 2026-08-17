@@ -1,53 +1,17 @@
 ---
 layout: default
 ---
-<!-- _layouts/post.html -->
-{%- assign year = page.date | date: "%Y" -%}
-{%- assign tags = page.tags | join: "" -%}
-{%- assign categories = page.categories | join: "" -%}
-
-{% if page._styles %}
-<!-- Page/Post style -->
-<style type="text/css">
-  {{ page._styles }}
-</style>
-{% endif %}
-
-<div class="post">
-
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">{{ page.date | date: "%B %-d, %Y" }}{%- if page.author -%} • {{ page.author }}{%- endif -%}{%- if page.meta -%} • {{ page.meta }}{%- endif -%}</p>
-    <p class="post-tags">
-      <a href="{{ year | prepend: '/blog/' | prepend: site.baseurl}}"> <i class="fas fa-calendar fa-sm"></i> {{ year }} </a>
-      {%- if tags != "" %}
-      &nbsp; &middot; &nbsp;
-        {% for tag in page.tags -%}
-        <a href="{{ tag | slugify | prepend: '/blog/tag/' | prepend: site.baseurl}}">
-          <i class="fas fa-hashtag fa-sm"></i> {{ tag }}</a> &nbsp;
-          {% endfor -%}
-      {% endif %}
-
-      {%- if categories != "" %}
-      &nbsp; &middot; &nbsp;
-        {% for category in page.categories -%}
-        <a href="{{ category | slugify | prepend: '/blog/category/' | prepend: site.baseurl}}">
-          <i class="fas fa-tag fa-sm"></i> {{ category }}</a> &nbsp;
-          {% endfor -%}
-      {% endif %}
-
-    </p>
+{% assign read_time = page.content | number_of_words | divided_by: 180 | plus: 1 %}
+<article class="longform-post">
+  <header class="article-header">
+    <a class="back-link" href="{{ '/blog/' | relative_url }}"><span aria-hidden="true">←</span> All writing</a>
+    <p class="eyebrow">{% if page.categories %}{{ page.categories | first }}{% else %}Writing{% endif %}</p>
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}<p class="article-deck">{{ page.description }}</p>{% endif %}
+    <div class="article-byline"><span>By Maxime Wolf</span><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time><span>{{ read_time }} min read</span></div>
+    {% if page.tags %}<ul class="tag-list" aria-label="Article topics">{% for tag in page.tags %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
   </header>
-
-  <article class="post-content" {% if page.font %}style="font-family: {{ page.font }};"{% endif %}>
-    {{ content }}
-  </article>
-
-  {%- if site.disqus_shortname and page.disqus_comments -%}
-    {% include disqus.html %}
-  {%- endif %}
-  {%- if site.giscus.repo and page.giscus_comments -%}
-    {% include giscus.html %}
-  {%- endif -%}
-
-</div>
+  <div class="post-content"{% if page.font %} style="font-family: {{ page.font }};"{% endif %}>{{ content }}</div>
+  <footer class="article-footer"><p>Written by <strong>Maxime Wolf</strong>.</p><a class="text-link" href="{{ '/blog/' | relative_url }}">More writing <span aria-hidden="true">→</span></a></footer>
+  {% if site.giscus.repo and page.giscus_comments %}<div class="comments-shell">{% include giscus.html %}</div>{% endif %}
+</article>
