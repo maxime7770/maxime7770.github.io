@@ -10,14 +10,14 @@
   </head>
 
   <!-- Body -->
-  <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %}">
+  <body class="{% if site.navbar_fixed %}fixed-top-nav{% endif %} {% unless site.footer_fixed %}sticky-bottom-footer{% endunless %} page-kind-{{ page.layout | default: 'default' }}">
 
     <!-- Header -->
     {%- include header.html %}
 
     <!-- Content -->
     <main class="site-main">
-      <div class="container mt-5 page-shell">
+      <div class="container page-shell">
         {{ content }}
       </div>
     </main>

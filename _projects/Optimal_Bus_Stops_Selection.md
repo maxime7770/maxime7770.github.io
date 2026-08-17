@@ -5,5 +5,8 @@ description: We built optimization models to optimize the selection of bus stops
 img: assets/img/project_optimization_cover.png
 importance: 5
 category: MIT
+context: MIT · MBTA
+tags: [Optimization, Transportation]
+featured: true
 redirect: https://github.com/maxime7770/Optimal-Bus-Stops-Selection
 ---

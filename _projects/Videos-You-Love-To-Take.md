@@ -5,5 +5,7 @@ description: Video classification project using deep learning, combining Recurre
 img: assets/img/project_videos_you_love_to_take_cover.png
 importance: 2
 category: MIT
+context: MIT
+tags: [Deep learning, Video classification]
 redirect: https://github.com/maxime7770/Videos-You-Love-To-Take
 ---

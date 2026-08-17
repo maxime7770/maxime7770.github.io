@@ -4,7 +4,7 @@
   $(function () {$('[data-toggle="tooltip"]').tooltip()})
   </script>
 {%- endif %}
-{%- if site.enable_medium_zoom %}
+{%- if site.enable_medium_zoom and page.layout == 'project' or site.enable_medium_zoom and page.layout == 'post' %}
   <!-- Medium Zoom JS -->
   <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@{{ site.medium_zoom.version }}/dist/medium-zoom.min.js" integrity="{{ site.medium_zoom.integrity }}" crossorigin="anonymous"></script>
   <script defer src="{{ '/assets/js/zoom.js' | relative_url }}"></script>

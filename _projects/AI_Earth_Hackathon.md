@@ -5,5 +5,6 @@ description: By combining innovative LLMs and NLP, this tool enhances evaluation
 img: assets/img/project_ai_earth_hackathon_cover.jpg
 importance: 1
 category: Personal projects
+tags: [LLMs, NLP, Circular economy]
 redirect: https://github.com/maxime7770/AI-Earth-Hackathon
 ---

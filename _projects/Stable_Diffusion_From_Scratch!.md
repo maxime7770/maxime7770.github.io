@@ -5,5 +5,6 @@ description: An implementation of the Stable Diffusion algorithm and UNet from s
 img: assets/img/project_stable_diffusion_cover.jpeg
 importance: 2
 category: Personal projects
+tags: [Stable Diffusion, TensorFlow]
 redirect: https://github.com/maxime7770/Stable-Diffusion
 ---

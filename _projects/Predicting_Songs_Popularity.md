@@ -5,6 +5,7 @@ description: We built an interface to predict the popularity of Spotify songs ba
 img: assets/img/project_analytics_edge_cover.png
 importance: 4
 category: MIT
+context: MIT
+tags: [Machine learning, Audio]
 redirect: https://github.com/maxime7770/Analytics-Edge-Song-Predictor
 ---
-

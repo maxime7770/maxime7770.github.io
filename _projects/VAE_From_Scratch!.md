@@ -5,5 +5,6 @@ description: A simple implementation of a Variational Autoencoder from scratch u
 img: assets/img/project_vae_cover.png
 importance: 2
 category: Personal projects
+tags: [VAE, TensorFlow]
 redirect: https://github.com/maxime7770/VAE
 ---

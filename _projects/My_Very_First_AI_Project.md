@@ -5,8 +5,8 @@ description: This is my very first AI project, in which the goal was to develop 
 img: assets/img/project_first_ai_project_cover.jpg
 importance: 5
 category: Personal projects
+tags: [Machine learning, Handwriting]
 redirect: https://maxime7770.github.io/projects/tfjs.html
 ---
 
 [Test link](https://maxime7770.github.io/projects/tfjs.html)
-
