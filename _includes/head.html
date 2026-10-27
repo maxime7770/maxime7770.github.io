@@ -22,6 +22,10 @@
     <link rel="shortcut icon" href="{{ site.icon | prepend: '/assets/img/' | relative_url}}"/>
     {% endif %}
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    {% if page.structured_matrices %}
+    <link rel="stylesheet" href="{{ '/assets/css/articles/structured-matrices.css' | relative_url }}">
+    <script defer src="{{ '/assets/js/articles/structured-matrices.js' | relative_url }}"></script>
+    {% endif %}
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
     
     <!-- Dark Mode -->

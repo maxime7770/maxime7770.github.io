@@ -11,7 +11,7 @@ categories:
   - math
   - machine-learning
 giscus_comments: true
-font: "JetBrains Mono, monospace"
+structured_matrices: true
 ---
 
 While working on an article about [model compression](https://towardsdatascience.com/model-compression-make-your-machine-learning-models-lighter-and-faster/), I came across a concept I had never really studied before: **structured matrices**.
@@ -23,6 +23,19 @@ What if, instead, we forced the entries to follow a pattern? We would have fewer
 In this article, we will build that idea progressively. We will start with Toeplitz and circulant matrices, see why the Fast Fourier Transform appears, and then move to more expressive structures such as Kronecker, Butterfly, and Monarch matrices. Finally, we will discuss the catch: fewer operations on paper do not automatically mean a faster neural network.
 
 I will assume that you are familiar with basic linear algebra and neural-network layers. You do not need to know anything about structured matrices or the FFT.
+
+<nav class="sm-outline" aria-label="Article sections">
+<span>A visual route through the article</span>
+<div>
+<a href="#toeplitz-matrices-repeating-along-diagonals">Share values</a>
+<a href="#circulant-matrices-toeplitz-with-wrap-around">Shift & wrap</a>
+<a href="#kronecker-products-building-a-large-matrix-from-small-ones">Build in blocks</a>
+<a href="#butterfly-matrices-learning-a-fast-algorithm">Mix in stages</a>
+<a href="#monarch-matrices-designing-for-gpus">Shuffle groups</a>
+</div>
+</nav>
+
+{% include structured-matrices/figure.html kind="sharing" number="01" topic="Parameter sharing" title="Parameter sharing in a 4 × 4 matrix" description="Choose a matrix structure to see which entries share a learned parameter." caption="A matrix can have many entries without learning each one independently. Repeated labels represent the same parameter." %}
 
 ## The Problem With Dense Linear Layers
 
@@ -36,7 +49,7 @@ where $$W \in \mathbb{R}^{n \times n}$$ and $$x \in \mathbb{R}^n$$.
 
 The matrix $$W$$ contains $$n^2$$ parameters. Multiplying it by $$x$$ also takes roughly $$n^2$$ multiply-add operations.
 
-This grows quickly. If $$n=4096$$, one matrix contains almost 16.8 million parameters. Stored in 16-bit precision, that is about 32 MB for a single layer. A modern model may contain dozens—or hundreds—of matrices of comparable size.
+This grows quickly. If $$n=4096$$, one matrix contains almost 16.8 million parameters. Stored in 16-bit precision, that is 32 MiB (about 33.6 MB) for a single layer. A modern model may contain dozens—or hundreds—of matrices of comparable size.
 
 Dense matrices are useful because they are extremely expressive: every output can learn a different relationship with every input. But that expressivity is also expensive.
 
@@ -69,7 +82,7 @@ These benefits are related, but they are not the same. A matrix can be cheap to 
 
 ## Toeplitz Matrices: Repeating Along Diagonals
 
-Let's begin with a simple example. A Toeplitz matrix has the same value everywhere along each diagonal:
+Let's begin with a simple example. Choose **Toeplitz** in the figure above: copies of the same parameter line up along diagonals. That is the defining rule of a Toeplitz matrix:
 
 $$
 T =
@@ -125,6 +138,10 @@ The corresponding multiplication is a **circular convolution**:
 $$
 (Cx)_i = \sum_{j=0}^{n-1} c_{(i-j) \bmod n}x_j.
 $$
+
+{% include structured-matrices/figure.html kind="circular" number="02" topic="Circular convolution" title="Computing a circular convolution" description="Play the sequence or drag through the rows. The input stays still while the weights move one position to the right." caption="For each row, multiply the four weights by the input and add the products. A weight that leaves the right edge returns on the left." %}
+
+The animation shows the direct calculation. It still takes a dot product for every row. To make it fast, we need to exploit the repeated pattern.
 
 Now the FFT enters the picture.
 
@@ -222,6 +239,8 @@ $$
 
 For example, if both $$A$$ and $$B$$ are $$2 \times 2$$, their Kronecker product is $$4 \times 4$$. The large matrix contains 16 entries, but it is described by the 8 entries in $$A$$ and $$B$$.
 
+{% include structured-matrices/figure.html kind="kronecker" number="03" topic="Block structure" title="Constructing the Kronecker product" description="Each entry of A multiplies a copy of B. The four resulting blocks form A ⊗ B." caption="Two 2 × 2 matrices describe a 4 × 4 matrix. These are eight stored scalar parameters, rather than sixteen independently stored entries." %}
+
 The saving becomes much larger as the matrices grow. Suppose $$A$$ is $$p \times p$$, $$B$$ is $$q \times q$$, and $$n=pq$$. Then $$A\otimes B$$ defines an $$n \times n$$ matrix using only
 
 $$
@@ -230,7 +249,7 @@ $$
 
 parameters instead of $$n^2=p^2q^2$$.
 
-Again, we should not build the large matrix explicitly. If we reshape $$x$$ into a matrix $$X$$, we can use the identity
+Again, we should not build the large matrix explicitly. If we reshape $$x$$ into a $$q \times p$$ matrix $$X$$, using column-major vectorization (stacking columns), we can use the identity
 
 $$
 (A\otimes B)\operatorname{vec}(X)
@@ -257,7 +276,9 @@ $$
 
 where each $$B_k$$ is sparse. Applying one stage costs $$O(n)$$, and there are $$O(\log n)$$ stages, so the complete multiplication costs $$O(n\log n)$$.
 
-There is a subtle but important correction to make here. Each stage contains $$n/2$$ small $$2\times2$$ blocks—not fewer and fewer blocks as the stages progress. A generic Butterfly layer therefore uses approximately $$2n\log_2 n$$ scalar parameters. That is still far smaller than $$n^2$$, but it is $$O(n\log n)$$ rather than $$O(n)$$.
+Count the small blocks in any one stage. Each stage contains $$n/2$$ small $$2\times2$$ blocks—not fewer and fewer blocks as the stages progress. A generic Butterfly layer therefore uses approximately $$2n\log_2 n$$ scalar parameters. That is still far smaller than $$n^2$$, but it is $$O(n\log n)$$ rather than $$O(n)$$.
+
+{% include structured-matrices/figure.html kind="butterfly" number="04" topic="Sparse computation" title="How information travels through a butterfly matrix" description="Follow the first input through three stages. Each stage pairs values at a larger distance: 1, then 2, then 4." caption="The highlighted paths show how one input can influence all eight outputs through only three stages of pairwise mixing." %}
 
 Why is this structure interesting? Because it does not assume in advance that the useful transformation is a convolution. It assumes that the transformation can be built through a divide-and-conquer computation similar to the FFT.
 
@@ -283,6 +304,8 @@ The operation is easier to picture as four steps:
 2. reshape the result into an $$m\times m$$ grid and transpose it (the $$P^\top$$ operation);
 3. split it into groups again and apply the dense blocks in $$L$$;
 4. undo the permutation with $$P$$.
+
+{% include structured-matrices/figure.html kind="monarch" number="05" topic="Hardware-friendly structure" title="The permutations in a Monarch layer" description="The permutation rearranges the values so the second block multiplication combines values from different original groups." caption="A routing schematic for n = 9. The labels track positions through the permutations; the dense block operations change the numerical values." %}
 
 The permutation lets information from one group reach other groups, while the block multiplications map neatly to batched dense operations. GPUs are very good at those.
 

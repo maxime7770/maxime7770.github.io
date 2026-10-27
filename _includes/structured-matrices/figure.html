@@ -1,0 +1,11 @@
+<figure class="sm-figure" data-sm="{{ include.kind }}" aria-labelledby="sm-{{ include.kind }}-title">
+  <header class="sm-heading">
+    <span class="sm-kicker">Figure {{ include.number | plus: 0 }}</span>
+    <h3 id="sm-{{ include.kind }}-title">{{ include.title }}</h3>
+    <p>{{ include.description }}</p>
+  </header>
+  <div class="sm-stage"></div>
+  <div class="sm-controls" hidden></div>
+  <figcaption class="sm-caption">{{ include.caption }}</figcaption>
+  <noscript><p class="sm-fallback">The interactive figure requires JavaScript. The equations and explanation below describe the same operation.</p></noscript>
+</figure>
