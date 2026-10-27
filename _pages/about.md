@@ -8,6 +8,7 @@ description: Maxime Wolf is a Data Scientist at Waymo focused on optimization an
 profile:
   align: right
   image: profil_image.jpg
+  show: false
   image_circular: false # crops the image to make it circular
   address:
 

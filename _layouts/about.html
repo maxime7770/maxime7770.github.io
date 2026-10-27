@@ -2,7 +2,7 @@
 layout: default
 ---
 <div class="home-page">
-  <section class="home-hero" aria-labelledby="home-title">
+  <section class="home-hero{% unless page.profile.show %} home-hero--text-only{% endunless %}" aria-labelledby="home-title">
     <div class="hero-copy">
       <p class="eyebrow">Machine learning + optimization</p>
       <h1 id="home-title">Maxime Wolf</h1>
@@ -19,10 +19,12 @@ layout: default
         <a href="mailto:maximew@alum.mit.edu">Email</a>
       </div>
     </div>
+    {% if page.profile.show %}
     <figure class="hero-portrait">
       <div class="portrait-frame">{% include figure.html path='assets/img/profil_image.jpg' alt='Portrait of Maxime Wolf' loading='eager' width='1954' height='1671' sizes='(max-width: 767px) calc(100vw - 40px), 410px' %}</div>
       <figcaption><span class="status-dot" aria-hidden="true"></span> Mountain View, California</figcaption>
     </figure>
+    {% endif %}
   </section>
 
   <section class="context-strip" aria-label="Professional and academic context">
@@ -63,7 +65,7 @@ layout: default
       {% assign read_time = post.content | number_of_words | divided_by: 180 | plus: 1 %}
       <article class="article-row">
         <a href="{{ post.url | relative_url }}">
-          <div class="article-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%b %Y' }}</time><span>{{ read_time }} min read</span></div>
+          <div class="article-meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%b %Y' }}</time>{% if post.content != empty %}<span>{{ read_time }} min read</span>{% endif %}</div>
           <h3>{{ post.title }}</h3><p>{{ post.description }}</p><span class="article-arrow" aria-hidden="true">→</span>
         </a>
       </article>

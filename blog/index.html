@@ -30,7 +30,7 @@ pagination:
         <a href="{{ post_href }}"{% if is_external %} target="_blank" rel="noopener"{% endif %}>
           <div class="article-meta">
             <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%B %-d, %Y' }}</time>
-            <span>{{ read_time }} min read</span>
+            {% if post.external_source == blank or post.feed_content != empty %}<span>{{ read_time }} min read</span>{% endif %}
             {% if post.external_source %}<span>{{ post.external_source }}</span>{% elsif post.categories %}<span>{{ post.categories | first | remove: ',' }}</span>{% endif %}
           </div>
           <div class="article-summary">

@@ -69,7 +69,12 @@ module ExternalPosts
     def fetch_from_urls(site, src)
       src['posts'].each do |post|
         puts "...fetching #{post['url']}"
-        content = fetch_content_from_url(post['url'])
+        # Curated entries should not depend on a remote page or its bot protection.
+        content = if post['title'] && !post['title'].strip.empty?
+          { title: post['title'], summary: post['description'], content: '' }
+        else
+          fetch_content_from_url(post['url'])
+        end
         content[:published] = parse_published_date(post['published_date'])
         create_document(site, src['name'], post['url'], content)
       end

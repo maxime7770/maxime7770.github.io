@@ -321,3 +321,5 @@ pre, code { border-color: var(--global-divider-color); }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+.home-hero.home-hero--text-only { grid-template-columns: minmax(0, 1fr); min-height: auto; }

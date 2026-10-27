@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Structured Matrices in Deep Learning
-date: 2025-05-03 00:00:00 +0000
+date: 2025-12-01 12:00:00 +0000
 description: How mathematical structure can make neural-network layers smaller and faster, from Toeplitz matrices to Butterfly and Monarch layers.
 tags:
   - deep-learning
