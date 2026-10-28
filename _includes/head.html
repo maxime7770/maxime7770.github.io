@@ -21,7 +21,7 @@
     {% elsif site.icon != blank %}
     <link rel="shortcut icon" href="{{ site.icon | prepend: '/assets/img/' | relative_url}}"/>
     {% endif %}
-    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.time | date: '%s' }}">
     {% if page.structured_matrices %}
     <link rel="stylesheet" href="{{ '/assets/css/articles/structured-matrices.css' | relative_url }}">
     <script defer src="{{ '/assets/js/articles/structured-matrices.js' | relative_url }}"></script>
