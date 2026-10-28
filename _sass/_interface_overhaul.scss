@@ -323,3 +323,82 @@ pre, code { border-color: var(--global-divider-color); }
 }
 
 .home-hero.home-hero--text-only { grid-template-columns: minmax(0, 1fr); min-height: auto; }
+
+/* Responsive refinements */
+#navbar .nav-shell { padding-inline: 28px; }
+#navbar .navbar-brand { gap: .22em; }
+.tag-list { border-bottom: 0; text-align: left; }
+.index-hero { margin-bottom: 0; }
+.writing-index .writing-list { border-top: 0; }
+.project-card-link { box-shadow: none; }
+.project-card-link:hover { box-shadow: 0 10px 28px var(--global-shadow-color); transform: translateY(-3px); }
+.hero-secondary-links a { min-height: 44px; display: inline-flex; align-items: center; gap: .3em; }
+.hero-actions .button { white-space: nowrap; }
+.article-header h1, .index-hero h1, .section-heading h2, .project-hero h1 { text-wrap: balance; }
+.post-content, .project-article { overflow-wrap: break-word; }
+.post-content table, .project-article table { display: block; max-width: 100%; overflow-x: auto; }
+.post-content mjx-container[display="true"], .project-article mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: 4px; }
+.post-content h2, .project-article h2 { scroll-margin-top: 96px; }
+
+@media (max-width: 767px) {
+  #navbar .nav-shell { padding-inline: 20px; }
+  #navbar { border-bottom-color: var(--global-divider-color); }
+  #navbar .navbar-toggler { margin-right: -10px; }
+  #navbar .nav-panel { max-height: calc(100dvh - 80px); overflow-y: auto; }
+  #navbar .nav-menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  #navbar .nav-menu > .nav-item:not(.nav-social-item):not(.toggle-container) { grid-column: 1 / -1; }
+  #navbar .navbar-nav .nav-item .nav-link { min-height: 48px; font-size: .9rem; border-radius: 8px; }
+  #navbar .navbar-nav .nav-item.active > .nav-link { box-shadow: none; background: var(--global-surface-muted-color); color: var(--global-theme-color); }
+  #navbar .nav-social-item, #navbar .toggle-container { margin: 4px 0 0; border-top: 1px solid var(--global-divider-color); padding-top: 6px; justify-content: center; }
+  #navbar .nav-icon-link, #light-toggle.theme-toggle { width: 100% !important; height: 48px; border-radius: 8px; }
+  .page-shell { margin-top: 32px; margin-bottom: 64px; }
+  .home-hero { padding-block: 44px 48px; }
+  .hero-copy h1 { font-size: clamp(2.7rem, 12vw, 4.5rem); line-height: 1.08; letter-spacing: -.055em; }
+  .hero-role { margin-top: 20px; font-size: 1.25rem; }
+  .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 26px; }
+  .hero-actions .button { min-height: 48px; }
+  .hero-actions .button--text { grid-column: 1 / -1; justify-self: start; padding-inline: 0; }
+  .hero-secondary-links { margin-top: 8px; gap: 24px; }
+  .home-section { padding-block: 56px; }
+  .section-heading { margin-bottom: 24px; }
+  .section-heading-row { gap: 12px; }
+  .section-heading h2, .about-heading h2 { font-size: clamp(1.75rem, 7.5vw, 2.4rem); line-height: 1.16; }
+  .page-content-shell > .post-header { margin-bottom: 40px; padding-bottom: 30px; }
+  .featured-work { padding-bottom: 56px; }
+  .project-archive { padding-top: 48px; }
+  .archive-group { margin-top: 32px; }
+  .archive-group + .archive-group { margin-top: 48px; }
+  .featured-project-grid, .archive-project-grid { gap: 20px; }
+  .project-card h3 { line-height: 1.3; }
+  .index-hero { padding-bottom: 30px; }
+  .index-hero h1 { font-size: clamp(2.2rem, 9.5vw, 3.2rem); line-height: 1.1; }
+  .index-hero > p:last-child { margin-top: 18px; font-size: 1.13rem; }
+  .writing-index .article-row > a { grid-template-columns: minmax(0, 1fr) 18px; gap: 12px; padding-block: 26px; }
+  .writing-index .article-meta { grid-column: 1 / -1; font-size: .66rem; }
+  .writing-index .article-arrow { grid-row: 2; align-self: start; line-height: 1.5; }
+  .writing-index .article-row h3 { font-size: 1.3rem; line-height: 1.3; }
+  .article-header { padding-bottom: 28px; margin-bottom: 34px; }
+  .article-header .back-link { margin-bottom: 26px; }
+  .article-header h1, .project-hero h1 { font-size: clamp(2.2rem, 9.5vw, 3.5rem); line-height: 1.08; }
+  .article-deck { margin-top: 20px; font-size: 1.13rem; }
+  .article-byline { flex-direction: row; gap: 6px 16px; margin-top: 22px; }
+  .article-byline > span:first-child { flex-basis: 100%; }
+  .post-content, .project-article { font-size: 1.0625rem; line-height: 1.75; }
+  .post-content h2, .project-article h2 { margin-top: 48px; font-size: 1.65rem; line-height: 1.2; }
+  .post-content h3 { margin-top: 34px; font-size: 1.3rem; }
+  .post-content ul, .post-content ol, .project-article ul, .project-article ol { padding-left: 24px; }
+  .post-content pre { padding: 16px; font-size: .78rem; }
+  .project-article { margin-top: 48px; }
+  .back-link { margin-bottom: 24px; }
+  .article-footer { margin-top: 48px; }
+  .home-contact { margin-top: 48px; padding: 28px 20px; }
+  .home-contact h2 { font-size: 1.8rem; line-height: 1.16; }
+  .home-contact .button { max-width: 100%; font-size: .8rem; }
+  .footer-inner { padding-block: 36px; gap: 16px; }
+}
+
+@media (hover: none) {
+  .project-card-link:hover, .button:hover, .project-card-link:hover .project-card-media img { transform: none; }
+}
+
+html[data-theme='dark'] .button--primary { color: #111512; }
